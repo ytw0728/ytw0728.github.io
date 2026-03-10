@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slash - Fast Bookmark Management</title>
+    <link rel="icon" type="image/svg+xml" href="logo.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .lang-switch select {
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .lang-switch select:hover {
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .lang-switch select:focus {
+            outline: none;
+            border-color: #764ba2;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        header h1 img {
+            width: 80px;
+            height: 80px;
+        }
+
+        header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #2d3748;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.8;
+        }
+
+        .platforms {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .platforms h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #2d3748;
+        }
+
+        .install {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .install h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: #2d3748;
+        }
+
+        .install-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .install-main {
+            background: #f8f9fa;
+            padding: 50px;
+            border-radius: 16px;
+            border: 3px solid #667eea;
+        }
+
+        .install-main h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #2d3748;
+            text-align: center;
+        }
+
+        .install-main > p {
+            font-size: 1.2rem;
+            color: #4a5568;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .install-features {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin: 30px 0;
+        }
+
+        .install-features h4 {
+            font-size: 1.3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .install-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .install-features li {
+            padding: 10px 0;
+            color: #4a5568;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .install-note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .install-note p {
+            margin: 0;
+            color: #856404;
+        }
+
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .platform-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .platform-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .platform-card p {
+            color: #718096;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .platform-card .btn {
+            margin-top: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+        }
+
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        body.lang-ko [data-lang="en"] {
+            display: none;
+        }
+
+        body.lang-en [data-lang="ko"] {
+            display: none;
+        }
+
+        /* Inline elements in cards */
+        .feature-card [data-lang="en"],
+        .feature-card [data-lang="ko"],
+        .platform-card [data-lang="en"],
+        .platform-card [data-lang="ko"] {
+            display: inline;
+        }
+
+        .feature-card [data-lang="ko"],
+        .platform-card [data-lang="ko"] {
+            display: none;
+        }
+
+        body.lang-ko .feature-card [data-lang="ko"],
+        body.lang-ko .platform-card [data-lang="ko"] {
+            display: inline;
+        }
+
+        body.lang-ko .feature-card [data-lang="en"],
+        body.lang-ko .platform-card [data-lang="en"] {
+            display: none;
+        }
+
+        body.lang-en .feature-card [data-lang="en"],
+        body.lang-en .platform-card [data-lang="en"] {
+            display: inline;
+        }
+
+        body.lang-en .feature-card [data-lang="ko"],
+        body.lang-en .platform-card [data-lang="ko"] {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header h1 img {
+                width: 60px;
+                height: 60px;
+            }
+
+            header p {
+                font-size: 1.1rem;
+            }
+
+            .features h2,
+            .platforms h2,
+            .install h2,
+            .cta h2 {
+                font-size: 2rem;
+            }
+
+            .lang-switch {
+                top: 10px;
+                right: 10px;
+            }
+
+            .lang-switch select {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .install-main {
+                padding: 30px 20px;
+            }
+
+            .install-features {
+                padding: 20px;
+            }
+
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-switch">
+        <select onchange="setLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="ko">한국어</option>
+        </select>
+    </div>
+
+    <header>
+        <div class="container">
+            <h1><img src="logo.svg" alt="Slash Logo">Slash</h1>
+            <p data-lang="en">Fast bookmark management with fuzzy search. Access your bookmarks instantly from anywhere.</p>
+            <p data-lang="ko">퍼지 검색으로 빠른 북마크 관리.<br/>어디서나 즉시 북마크에 접근하세요.</p>
+            <div style="margin-top: 30px;">
+                <!-- TBU -->
+                <a href="#" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px; margin: 0 10px;" data-lang="en">Install Chrome Extension</a>
+                <a href="#" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px; margin: 0 10px;" data-lang="ko">Chrome 확장 프로그램 설치</a>
+                <a href="#platforms" style="color: white; text-decoration: underline; margin-left: 20px; opacity: 0.9;" data-lang="en">View all platforms</a>
+                <a href="#platforms" style="color: white; text-decoration: underline; margin-left: 20px; opacity: 0.9;" data-lang="ko">모든 플랫폼 보기</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="install" id="install">
+        <div class="container">
+            <h2 data-lang="en">Get Started</h2>
+            <h2 data-lang="ko">시작하기</h2>
+            <div class="install-content">
+                <div class="install-main">
+                    <h3 data-lang="en">🌐 Chrome Extension</h3>
+                    <h3 data-lang="ko">🌐 Chrome 확장 프로그램</h3>
+                    <p data-lang="en">The core of Slash.<br/>Install the Chrome extension to get started with fast bookmark management.</p>
+                    <p data-lang="ko">Slash의 핵심입니다.<br/>Chrome 확장 프로그램을 설치하여 빠른 북마크 관리를 시작하세요.</p>
+                    
+                    <div class="install-features">
+                        <div data-lang="en">
+                            <h4>Key Features:</h4>
+                            <ul>
+                                <li>⚡ Instant fuzzy search from address bar (type "/" to activate)</li>
+                                <li>⭐ Mark frequently used bookmarks as favorites</li>
+                                <li>📁 Choose custom root bookmark folder</li>
+                                <li>⌨️ Keyboard shortcuts for quick access</li>
+                                <li>🌐 Multi-language support (English, Korean)</li>
+                                <li>🔒 100% local - no data leaves your device</li>
+                            </ul>
+                        </div>
+                        <div data-lang="ko">
+                            <h4>주요 기능:</h4>
+                            <ul>
+                                <li>⚡ 주소창에서 즉시 퍼지 검색 ("/" 입력으로 활성화)</li>
+                                <li>⭐ 자주 사용하는 북마크를 즐겨찾기로 표시</li>
+                                <li>📁 커스텀 루트 북마크 폴더 선택</li>
+                                <li>⌨️ 빠른 접근을 위한 키보드 단축키</li>
+                                <li>🌐 다국어 지원 (영어, 한국어)</li>
+                                <li>🔒 100% 로컬 - 데이터가 기기를 벗어나지 않음</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 30px;">
+                        <a href="#" class="btn" style="font-size: 1.2rem; padding: 15px 50px;" data-lang="en">Install from Chrome Web Store</a>
+                        <a href="#" class="btn" style="font-size: 1.2rem; padding: 15px 50px;" data-lang="ko">Chrome 웹 스토어에서 설치</a>
+                    </div>
+
+                    <div class="install-note">
+                        <p data-lang="en"><strong>Note:</strong> Works with Chrome, Edge, Brave, and other Chromium-based browsers.</p>
+                        <p data-lang="ko"><strong>참고:</strong> Chrome, Edge, Brave 및 기타 Chromium 기반 브라우저에서 작동합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="container">
+            <h2 data-lang="en">Features</h2>
+            <h2 data-lang="ko">주요 기능</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span data-lang="en">⚡ Fuzzy Search</span><span data-lang="ko">⚡ 퍼지 검색</span></h3>
+                    <p data-lang="en">Find your bookmarks instantly with intelligent fuzzy search. Type a few characters and get exactly what you need.</p>
+                    <p data-lang="ko">지능형 퍼지 검색으로 북마크를 즉시 찾으세요. 몇 글자만 입력하면 원하는 것을 정확히 찾을 수 있습니다.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span data-lang="en">🎯 Quick Access</span><span data-lang="ko">🎯 빠른 접근</span></h3>
+                    <p data-lang="en">Access bookmarks directly from your browser's address bar. No need to open menus or navigate through folders.</p>
+                    <p data-lang="ko">브라우저 주소창에서 바로 북마크에 접근하세요. 메뉴를 열거나 폴더를 탐색할 필요가 없습니다.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span data-lang="en">� Smart Organization</span><span data-lang="ko">� 스마트 정리</span></h3>
+                    <p data-lang="en">Manage your bookmarks efficiently with favorites, custom root folders, and intuitive organization.</p>
+                    <p data-lang="ko">즐겨찾기, 커스텀 루트 폴더, 직관적인 구성으로 북마크를 효율적으로 관리하세요.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span data-lang="en">� Extentsible</span><span data-lang="ko">� 확장 가능</span></h3>
+                    <p data-lang="en">Chrome extension as the core, with optional desktop and CLI plugins for enhanced functionality.</p>
+                    <p data-lang="ko">Chrome 확장 프로그램을 핵심으로, 선택적으로 데스크톱과 CLI 플러그인으로 기능을 확장할 수 있습니다.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span data-lang="en">🔒 Privacy First</span><span data-lang="ko">🔒 프라이버시 우선</span></h3>
+                    <p data-lang="en">All data stays local. No tracking, no cloud sync, no data collection. Your bookmarks are yours alone.</p>
+                    <p data-lang="ko">모든 데이터는 로컬에 저장됩니다. 추적 없음, 클라우드 동기화 없음, 데이터 수집 없음. 북마크는 오직 당신의 것입니다.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span data-lang="en">🌐 Multi-language</span><span data-lang="ko">🌐 다국어 지원</span></h3>
+                    <p data-lang="en">Support for multiple languages including English and Korean, with more coming soon.</p>
+                    <p data-lang="ko">영어와 한국어를 포함한 다국어를 지원하며, 더 많은 언어가 추가될 예정입니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="platforms" id="platforms">
+        <div class="container">
+            <h2 data-lang="en">Extend with Desktop & CLI</h2>
+            <h2 data-lang="ko">데스크톱 & CLI로 확장</h2>
+            <p style="text-align: center; color: #718096; margin-bottom: 40px; font-size: 1.1rem;" data-lang="en">Optional plugins to enhance your Slash experience</p>
+            <p style="text-align: center; color: #718096; margin-bottom: 40px; font-size: 1.1rem;" data-lang="ko">Slash 경험을 향상시키는 선택적 플러그인</p>
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <h3><span data-lang="en">💻 Desktop App</span><span data-lang="ko">💻 데스크톱 앱</span></h3>
+                    <p data-lang="en">Native desktop application for macOS, Windows, and Linux. Access bookmarks with global shortcuts even when browser is closed. Features system tray integration and auto-launch on startup.</p>
+                    <p data-lang="ko">macOS, Windows, Linux용 네이티브 데스크톱 애플리케이션. 브라우저가 닫혀있어도 전역 단축키로 북마크에 접근. 시스템 트레이 통합 및 시작 시 자동 실행 기능.</p>
+                    <a href="#" class="btn btn-secondary" data-lang="en">Download Desktop</a>
+                    <a href="#" class="btn btn-secondary" data-lang="ko">데스크톱 다운로드</a>
+                </div>
+                <div class="platform-card">
+                    <h3><span data-lang="en">⌨️ CLI Tool</span><span data-lang="ko">⌨️ CLI 도구</span></h3>
+                    <p data-lang="en">Command-line interface for power users. Search and open bookmarks directly from your terminal. Perfect for integrating into scripts and workflows. Supports all major shells (bash, zsh, fish).</p>
+                    <p data-lang="ko">파워 유저를 위한 커맨드라인 인터페이스. 터미널에서 직접 북마크를 검색하고 열 수 있습니다. 스크립트와 워크플로우에 통합하기 완벽합니다. 모든 주요 셸 지원 (bash, zsh, fish).</p>
+                    <a href="#" class="btn" data-lang="en">Get CLI</a>
+                    <a href="#" class="btn" data-lang="ko">CLI 받기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <h2 data-lang="en">Get Started Today</h2>
+            <h2 data-lang="ko">지금 시작하세요</h2>
+            <p data-lang="en">Start with the Chrome extension and expand with desktop or CLI as needed.</p>
+            <p data-lang="ko">Chrome 확장 프로그램으로 시작하고 필요에 따라 데스크톱이나 CLI로 확장하세요.</p>
+            <a href="#" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px;" data-lang="en">Install Chrome Extension</a>
+            <a href="#" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px;" data-lang="ko">Chrome 확장 프로그램 설치</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p data-lang="en">&copy; 2026 Slash. Bookmark management.</p>
+            <p data-lang="ko">&copy; 2026 Slash. 북마크 관리.</p>
+            <p style="margin-top: 10px;">
+                <!-- <a href="https://github.com/yourusername/slash">GitHub</a> |  -->
+                <a href="privacy.html" data-lang="en">Privacy Policy</a>
+                <a href="privacy.html" data-lang="ko">개인정보 처리방침</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Language switching functionality
+        let currentLang = localStorage.getItem('language') || 'en';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('language', lang);
+            
+            // Update body class
+            document.body.classList.remove('lang-en', 'lang-ko');
+            document.body.classList.add('lang-' + lang);
+            
+            // Update select value
+            const select = document.querySelector('.lang-switch select');
+            if (select) select.value = lang;
+        }
+
+        // Set initial language on page load
+        setLanguage(currentLang);
+    </script>
+</body>
+</html>
