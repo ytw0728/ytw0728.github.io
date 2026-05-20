@@ -156,6 +156,19 @@
         .cta h2 { font-size: 2.5rem; margin-bottom: 20px; }
         .cta p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.95; }
 
+        /* What's new banner */
+        .whatsnew { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 50px 0; border-top: 1px solid #f59e0b33; border-bottom: 1px solid #f59e0b33; }
+        .whatsnew-inner { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+        .whatsnew-pill { display: inline-block; background: #d97706; color: white; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.05em; text-transform: uppercase; }
+        .whatsnew h2 { font-size: 2rem; margin: 14px 0 8px; color: #78350f; }
+        .whatsnew-lede { color: #78350f; opacity: 0.85; font-size: 1.05rem; margin-bottom: 28px; }
+        .whatsnew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+        .whatsnew-item { background: rgba(255,255,255,0.7); padding: 18px 20px; border-radius: 10px; border: 1px solid rgba(217,119,6,0.18); }
+        .whatsnew-item h3 { font-size: 1.05rem; margin: 0 0 6px; color: #92400e; display: flex; gap: 8px; align-items: center; }
+        .whatsnew-item p { color: #4a3a1a; font-size: 0.95rem; line-height: 1.55; margin: 0; }
+        .whatsnew-item code { background: #1f2937; color: #fde68a; padding: 1px 6px; border-radius: 4px; font-size: 0.85em; }
+        .whatsnew-item .kbd { display: inline-block; background: #fff; color: #92400e; border: 1px solid #d97706; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.8em; }
+
         /* Footer */
         footer { background: #2d3748; color: white; padding: 40px 0; text-align: center; }
         footer a { color: #667eea; text-decoration: none; }
@@ -239,6 +252,48 @@
             </div>
         </div>
     </header>
+
+    <section class="whatsnew" id="whatsnew">
+        <div class="whatsnew-inner">
+            <span class="whatsnew-pill">v1.1.0</span>
+            <h2 data-lang="en">What's New</h2>
+            <h2 data-lang="ko">새로운 기능</h2>
+            <p class="whatsnew-lede" data-lang="en">Bookmark URL templates with variables — now everywhere.</p>
+            <p class="whatsnew-lede" data-lang="ko">변수가 들어간 북마크 URL 템플릿 — 이제 어디서나 사용하세요.</p>
+            <div class="whatsnew-grid">
+                <div class="whatsnew-item">
+                    <h3>🧩 <span data-lang="en">URL templates</span><span data-lang="ko">URL 템플릿</span></h3>
+                    <p data-lang="en">Save a bookmark URL like <code>https://jira/browse/{0}</code> and pass the placeholder at runtime: <code>s/jira CADGROWTH-140</code>.</p>
+                    <p data-lang="ko">북마크 URL을 <code>https://jira/browse/{0}</code> 처럼 저장하고 실행 시점에 값을 넘기세요: <code>s/jira CADGROWTH-140</code>.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>⌨️ <span data-lang="en">Tab → variable mode</span><span data-lang="ko">Tab → 변수 모드</span></h3>
+                    <p data-lang="en">In the overlay or desktop search window, hit <span class="kbd">Tab</span> on a template bookmark to enter variable input mode with a live preview.</p>
+                    <p data-lang="ko">오버레이나 데스크톱 검색창에서 템플릿 북마크 위에 <span class="kbd">Tab</span> 을 누르면 라이브 미리보기와 함께 변수 입력 모드로 진입합니다.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>🎯 <span data-lang="en">Default URL</span><span data-lang="ko">기본 URL</span></h3>
+                    <p data-lang="en">Set a default URL per template — opening <code>s/jira</code> without args jumps to your dashboard, while <code>s/jira KEY-1</code> still substitutes.</p>
+                    <p data-lang="ko">템플릿마다 기본 URL을 설정하세요. <code>s/jira</code> 처럼 인자 없이 호출하면 대시보드로, <code>s/jira KEY-1</code>은 변수 치환으로 동작합니다.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>🧪 <span data-lang="en">Per-variable defaults</span><span data-lang="ko">변수별 기본값</span></h3>
+                    <p data-lang="en">Write <code>{0:home}</code> in the URL — the value <code>home</code> is used whenever the user doesn't pass an arg.</p>
+                    <p data-lang="ko">URL에 <code>{0:home}</code> 처럼 작성하면 인자가 빠졌을 때 <code>home</code> 이 사용됩니다.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>💻 <span data-lang="en">CLI variable support</span><span data-lang="ko">CLI 변수 지원</span></h3>
+                    <p data-lang="en">The <code>s</code> command now mirrors the address bar: <code>s wiki hello</code> resolves the template and opens the substituted URL.</p>
+                    <p data-lang="ko"><code>s</code> 명령이 주소창과 동일하게 동작합니다: <code>s wiki hello</code> 로 템플릿을 풀어 치환된 URL을 엽니다.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>🪟 <span data-lang="en">Desktop chip mode</span><span data-lang="ko">데스크톱 칩 모드</span></h3>
+                    <p data-lang="en">The desktop search window now has the same Tab-to-chip flow as the in-browser overlay.</p>
+                    <p data-lang="ko">데스크톱 검색창에서도 오버레이와 동일한 Tab → 칩 입력 흐름이 동작합니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <section class="install" id="install">
         <div class="container">
@@ -324,6 +379,11 @@
                     <h3><span data-lang="en">🌐 Multi-language</span><span data-lang="ko">🌐 다국어 지원</span></h3>
                     <p data-lang="en">Support for multiple languages including English and Korean, with more coming soon.</p>
                     <p data-lang="ko">영어와 한국어를 포함한 다국어를 지원하며, 더 많은 언어가 추가될 예정입니다.</p>
+                </div>
+                <div class="feature-card">
+                    <h3><span data-lang="en">🧩 URL Templates (new in 1.1.0)</span><span data-lang="ko">🧩 URL 템플릿 (1.1.0 신규)</span></h3>
+                    <p data-lang="en">Save bookmarks with <code>{0}</code>-style variables. Pass values from the address bar, the overlay, or the CLI — Tab opens an interactive picker with a live preview.</p>
+                    <p data-lang="ko">북마크에 <code>{0}</code> 같은 변수를 저장하고 주소창·오버레이·CLI에서 값을 넘기세요. Tab으로 라이브 미리보기 입력 모드를 열 수 있습니다.</p>
                 </div>
             </div>
         </div>
