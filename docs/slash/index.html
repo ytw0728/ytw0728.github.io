@@ -255,12 +255,27 @@
 
     <section class="whatsnew" id="whatsnew">
         <div class="whatsnew-inner">
-            <span class="whatsnew-pill">v1.1.0</span>
+            <span class="whatsnew-pill">v1.1.1</span>
             <h2 data-lang="en">What's New</h2>
             <h2 data-lang="ko">새로운 기능</h2>
-            <p class="whatsnew-lede" data-lang="en">Bookmark URL templates with variables — now everywhere.</p>
-            <p class="whatsnew-lede" data-lang="ko">변수가 들어간 북마크 URL 템플릿 — 이제 어디서나 사용하세요.</p>
+            <p class="whatsnew-lede" data-lang="en">Variable input, refined — chip-style fields everywhere and quoted arguments where you type a single line.</p>
+            <p class="whatsnew-lede" data-lang="ko">변수 입력이 더 깔끔해졌어요 — 어디서나 칩 형태의 입력 필드, 한 줄로 입력하는 곳에서는 따옴표로 값 묶기.</p>
             <div class="whatsnew-grid">
+                <div class="whatsnew-item">
+                    <h3>🔄 <span data-lang="en">Desktop auto-update</span><span data-lang="ko">데스크톱 자동 업데이트</span></h3>
+                    <p data-lang="en">The desktop app now checks for new signed releases on launch and offers a one-click update. You can also check anytime from Settings.</p>
+                    <p data-lang="ko">데스크톱 앱이 실행 시 서명된 새 버전을 확인해 한 번에 업데이트할 수 있습니다. 설정에서 언제든 직접 확인할 수도 있어요.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>🔵 <span data-lang="en">Per-variable chips</span><span data-lang="ko">변수별 칩 입력</span></h3>
+                    <p data-lang="en">In the overlay, popup, and desktop, each variable becomes its own chip. Type a value with spaces directly — no quoting needed. Move between chips with <span class="kbd">Space</span> / <span class="kbd">Tab</span> / arrows.</p>
+                    <p data-lang="ko">오버레이·팝업·데스크톱에서 각 변수가 칩으로 분리됩니다. 공백이 포함된 값도 따옴표 없이 그대로 입력하세요. 칩 사이 이동은 <span class="kbd">Space</span> / <span class="kbd">Tab</span> / 방향키.</p>
+                </div>
+                <div class="whatsnew-item">
+                    <h3>❝ <span data-lang="en">Quote to group args</span><span data-lang="ko">따옴표로 값 묶기</span></h3>
+                    <p data-lang="en">In the address bar and CLI, wrap a multi-word value in quotes so it stays one argument: <code>s/jira "create bug"</code>.</p>
+                    <p data-lang="ko">주소창과 CLI에서는 여러 단어로 된 값을 따옴표로 묶어 하나의 인자로 전달합니다: <code>s/jira "create bug"</code>.</p>
+                </div>
                 <div class="whatsnew-item">
                     <h3>🧩 <span data-lang="en">URL templates</span><span data-lang="ko">URL 템플릿</span></h3>
                     <p data-lang="en">Save a bookmark URL like <code>https://jira/browse/{0}</code> and pass the placeholder at runtime: <code>s/jira CADGROWTH-140</code>.</p>
@@ -287,9 +302,9 @@
                     <p data-lang="ko"><code>s</code> 명령이 주소창과 동일하게 동작합니다: <code>s wiki hello</code> 로 템플릿을 풀어 치환된 URL을 엽니다.</p>
                 </div>
                 <div class="whatsnew-item">
-                    <h3>🪟 <span data-lang="en">Desktop chip mode</span><span data-lang="ko">데스크톱 칩 모드</span></h3>
-                    <p data-lang="en">The desktop search window now has the same Tab-to-chip flow as the in-browser overlay.</p>
-                    <p data-lang="ko">데스크톱 검색창에서도 오버레이와 동일한 Tab → 칩 입력 흐름이 동작합니다.</p>
+                    <h3>🪟 <span data-lang="en">Chip mode everywhere</span><span data-lang="ko">어디서나 칩 모드</span></h3>
+                    <p data-lang="en">The popup and desktop search windows now share the same <span class="kbd">Tab</span> → chip flow as the in-browser overlay.</p>
+                    <p data-lang="ko">팝업과 데스크톱 검색창에서도 오버레이와 동일한 <span class="kbd">Tab</span> → 칩 입력 흐름이 동작합니다.</p>
                 </div>
             </div>
         </div>

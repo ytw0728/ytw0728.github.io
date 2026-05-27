@@ -10,7 +10,7 @@ ARCH=$(uname -m)
 if [ "$ARCH" = "x86_64" ]; then ARCH="amd64";
 elif [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then ARCH="arm64"; fi
 
-BINARY_URL="https://ytw0728.github.io/docs/slash/clis/v1.1.0/s-${OS}-${ARCH}"
+BINARY_URL="https://ytw0728.github.io/docs/slash/clis/v1.1.1/s-${OS}-${ARCH}"
 
 curl -fSL "$BINARY_URL" -o /tmp/s-binary
 sudo mv /tmp/s-binary /usr/local/bin/s
