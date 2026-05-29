@@ -1,18 +1,18 @@
 {
   "version": "1.1.1",
-  "notes": "Per-variable chips, quoted args in the address bar/CLI, and desktop auto-update.",
-  "pub_date": "2026-05-27T11:02:30Z",
+  "notes": "Per-variable chips, quoted args in the address bar/CLI, and desktop auto-update. Desktop Tab now autocompletes to the top match when there's no exact path.",
+  "pub_date": "2026-05-29T16:24:35Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVc0cC9DSmNId3BBOERqdStPcjUweUgzUFNXMWJJNFZZcXJOaTI5ODFvWFR4cTQ3RlQwNUFvRGNjbVV0dnBkTFhQNG8wa29ZRHU3UXFLNVZqUm9rOXdZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5ODc5NTE4CWZpbGU6U2xhc2guYXBwLnRhci5negpGTkhaSk9sM1BJZTdDSSsxMUFuUmI4M3lMSmQ2eGZZQWVrb3JQdVZCbWRaczF4WGRPYjJwczFwMkZMN01yVFpNbE1zak9Ma0VEa25aamFNRkx0VGdBZz09Cg==",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWI0MDZweTV4dTMyMDZ3ZmZKbEFHRk5FdXhsSDIwTXZzd1JzeUt4a2JpVDgzaCtkOEg5Z0c2a3VOdWZXWWVQQ1hUdWdObG8zT3BwVWl2N05uVE5XbGd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMDcxNzAwCWZpbGU6U2xhc2guYXBwLnRhci5negpaaEhnSnN6TXZkVkxBK29kVGRsbm9YVHB1NGlOU2xZWEFUQ3IyVlFaZ0oxOTh1ZzlHSVROV1p6TFVCa1AwU1FNUm55QTVXbE1IN3V4L0Q2STlhNG1DUT09Cg==",
       "url": "https://ytw0728.github.io/docs/slash/desktops/v1.1.1/Slash_1.1.1_universal.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVc0cC9DSmNId3BBOERqdStPcjUweUgzUFNXMWJJNFZZcXJOaTI5ODFvWFR4cTQ3RlQwNUFvRGNjbVV0dnBkTFhQNG8wa29ZRHU3UXFLNVZqUm9rOXdZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5ODc5NTE4CWZpbGU6U2xhc2guYXBwLnRhci5negpGTkhaSk9sM1BJZTdDSSsxMUFuUmI4M3lMSmQ2eGZZQWVrb3JQdVZCbWRaczF4WGRPYjJwczFwMkZMN01yVFpNbE1zak9Ma0VEa25aamFNRkx0VGdBZz09Cg==",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWI0MDZweTV4dTMyMDZ3ZmZKbEFHRk5FdXhsSDIwTXZzd1JzeUt4a2JpVDgzaCtkOEg5Z0c2a3VOdWZXWWVQQ1hUdWdObG8zT3BwVWl2N05uVE5XbGd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMDcxNzAwCWZpbGU6U2xhc2guYXBwLnRhci5negpaaEhnSnN6TXZkVkxBK29kVGRsbm9YVHB1NGlOU2xZWEFUQ3IyVlFaZ0oxOTh1ZzlHSVROV1p6TFVCa1AwU1FNUm55QTVXbE1IN3V4L0Q2STlhNG1DUT09Cg==",
       "url": "https://ytw0728.github.io/docs/slash/desktops/v1.1.1/Slash_1.1.1_universal.app.tar.gz"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWJaUk5YbzB2azBpNzlvZUIzZE96RnJpOUxCOU45OFZuM3NuNmZqTDlha3BlQ0VkYjE5TGFkRG1oUmI4bDhDdGJibUQxRGN1NXpwUDdPbS95MzlhZGdjPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5ODc5Njg4CWZpbGU6U2xhc2hfMS4xLjFfeDY0LXNldHVwLmV4ZQo4eDByTk1RczJ5bVRSV2VkVjcxaUJwOTRiOGVpVzNQREZ1NjF5cmFsQUlrRk0vU28zZ3U1U3FQaTFpT3JFZk4rMlFyb0ZCV2pibTJDM3ZEUW9TVnBCdz09Cg==",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVpJZGdCaWFIdVZJK01mckZ4SHMyOEZEWEhPa1g5RGJBWVNiNTZpMzBaWlpwUDF6WDcxWHd5ZmVVV05aWXFyM2NiZi9DeHlucW9VVnRScGxCNm1HWVFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwMDcxODQxCWZpbGU6U2xhc2hfMS4xLjFfeDY0LXNldHVwLmV4ZQpDTGd3blVHZmlUWUVSZi9RTUdHanVoWUxHODBJQ09BK3pSSDZHMGZyd0EyUTczK2lrOFFISmpiNkVRSlFXOGVtcXoyMERjVWk4OWNWcEZKT2lUQUFBUT09Cg==",
       "url": "https://ytw0728.github.io/docs/slash/desktops/v1.1.1/Slash_1.1.1_x64-setup.exe"
     }
   }
