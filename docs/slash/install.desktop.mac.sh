@@ -2,7 +2,7 @@
 set -e
 
 APP_NAME="Slash"
-DMG_URL="https://ytw0728.github.io/docs/slash/desktops/v1.1.1/Slash_1.1.1_universal.dmg"
+DMG_URL="https://ytw0728.github.io/docs/slash/desktops/v1.2.0/Slash_1.2.0_universal.dmg"
 DMG_PATH="/tmp/Slash_install.dmg"
 MOUNT_DIR="/tmp/slash_dmg_mount"
 INSTALL_DIR="/Applications"
