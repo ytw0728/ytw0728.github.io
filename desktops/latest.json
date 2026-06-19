@@ -1,19 +1,19 @@
 {
-  "version": "1.2.2",
+  "version": "1.2.3",
   "notes": "Minor fixes.",
-  "pub_date": "2026-06-18T17:15:05Z",
+  "pub_date": "2026-06-19T05:02:00Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWR2QjNwWG5YWm9TeW5sSTJxQi9iRVUxNThDWnpXV2tmWWlGdXZQY3NPTEpqQ3BzT1k1cDU1UnJNcFltcHhlZDVXZ2lJZG9iVDdpU29YZGlORmNoT0E0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODAyNjQzCWZpbGU6U2xhc2guYXBwLnRhci5negp3SkZTa3IvOWpSYjF2Vkl4RE56UzdBdEV4dHQ4SStMQ2tHRGgxV3ZscXI1NUloYmpjampYODhNalpHSlpsZ3hLM2FGTmJJV2tnZ2tmZTdoNk5lNmtBZz09Cg==",
-      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.2/Slash_1.2.2_universal.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVh2bnBOM0diQ0s2MTU2V0pTVnBzT0JjWXgycFcrM09vYUlHd21pRlkyUVJIR1MwUy9kOHVpKytISWoycWwvV3YrSXZ4eWRGQ0hTRUNCSzNoSUY3dndNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODQ1MTc0CWZpbGU6U2xhc2guYXBwLnRhci5negoxbldGYXl6dG1RMkxPbGFNbVNvcE1kSnRCOEpqa0twSUQzZE1YcGl2WE5EanZzZllHOFJ3bGtyYk5xUUlrRS9ySEU2d3ZmaWxtWW0vYUMyNk8xUlBCUT09Cg==",
+      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.3/Slash_1.2.3_universal.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWR2QjNwWG5YWm9TeW5sSTJxQi9iRVUxNThDWnpXV2tmWWlGdXZQY3NPTEpqQ3BzT1k1cDU1UnJNcFltcHhlZDVXZ2lJZG9iVDdpU29YZGlORmNoT0E0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODAyNjQzCWZpbGU6U2xhc2guYXBwLnRhci5negp3SkZTa3IvOWpSYjF2Vkl4RE56UzdBdEV4dHQ4SStMQ2tHRGgxV3ZscXI1NUloYmpjampYODhNalpHSlpsZ3hLM2FGTmJJV2tnZ2tmZTdoNk5lNmtBZz09Cg==",
-      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.2/Slash_1.2.2_universal.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVh2bnBOM0diQ0s2MTU2V0pTVnBzT0JjWXgycFcrM09vYUlHd21pRlkyUVJIR1MwUy9kOHVpKytISWoycWwvV3YrSXZ4eWRGQ0hTRUNCSzNoSUY3dndNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODQ1MTc0CWZpbGU6U2xhc2guYXBwLnRhci5negoxbldGYXl6dG1RMkxPbGFNbVNvcE1kSnRCOEpqa0twSUQzZE1YcGl2WE5EanZzZllHOFJ3bGtyYk5xUUlrRS9ySEU2d3ZmaWxtWW0vYUMyNk8xUlBCUT09Cg==",
+      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.3/Slash_1.2.3_universal.app.tar.gz"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVFNZ0FzT2x6VTNVMlpQbWdkcGs1a1Zxbjg2TlFwR0szUVY2aVZsb0MxZzA2THJVOGs5SEVES0c3ZU5XejVnQ0c3Z1cwbFA4NWdMcFo2VWV5Y3lsaUF3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODAyNzU2CWZpbGU6U2xhc2hfMS4yLjJfeDY0LXNldHVwLmV4ZQptUmJmcThmOHZmb2IzZG1vQytuTUFieHVPTFBpUnhVRkhHOWsvRzdZcStDUnF3NjZMdWpVMmRkdFF3UTgrWkhySVljRmpOQTg5QXJIbGhOUC94S0pBQT09Cg==",
-      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.2/Slash_1.2.2_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVNkSE1HaXU1V1l0YXg2VHBiZVB2KzNjdzVPMHZjMC83OGZYREFLYzRLMlpLWjZHRXh6cHR1UHhLKzB4T21VZFlRaDBBdzAycXdxUUNmSktKUW9VTncwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODQ1MjgxCWZpbGU6U2xhc2hfMS4yLjNfeDY0LXNldHVwLmV4ZQp2aDI2TzEwVERlVCtjSjVEZWdOZlZMZ25ZMUsvekZPTWNnQ05RSVltekhxNFZrUUY5VHlYSktoNWlhWmhxa1UycU1XREJZakRJRTFyVkc4M1VSbjBEUT09Cg==",
+      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.3/Slash_1.2.3_x64-setup.exe"
     }
   }
 }
