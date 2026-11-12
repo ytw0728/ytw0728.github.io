@@ -1,513 +1,1252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slash - Fast Bookmark Management</title>
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6; color: #333; background: #f8f9fa;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slash | Fast Bookmark Management</title>
+<meta name="description" content="Jump to any bookmark by path. Fuzzy search from the address bar, an overlay anywhere, plus desktop and CLI.">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+/* ============================================================================
+   Design tokens: palette derived from the logo gradient (#5B7FFF to #8B5CF6)
+   so the mark and the page read as one system. Cyan is the single accent,
+   reserved for interactive affordances.
+   ========================================================================== */
+:root {
+  --brand-400: #7B96FF;
+  --brand-500: #5B7FFF;
+  --brand-600: #4260E8;
+  --violet-500: #8B5CF6;
+  --violet-600: #7A46E8;
+  --accent-400: #38D9EF;
+  --accent-500: #18BFDA;
 
-        /* Language switch */
-        .lang-switch { position: fixed; top: 20px; right: 20px; z-index: 1000; }
-        .lang-switch select {
-            background: white; border: 2px solid #667eea; color: #667eea;
-            padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        .lang-switch select:hover { box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
-        .lang-switch select:focus { outline: none; border-color: #764ba2; }
+  /* Foreground-safe brand tints: the 600s are backgrounds-only in dark mode. */
+  --brand-fg: var(--brand-600);
+  --violet-fg: var(--violet-600);
 
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; padding: 80px 0;
-        }
-        .hero-layout {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
-        }
-        .hero-text { text-align: left; }
-        .hero-text h1 {
-            font-size: 3.5rem; margin-bottom: 20px; font-weight: 700;
-            display: flex; align-items: center; gap: 20px;
-        }
-        .hero-text h1 img { width: 80px; height: 80px; }
-        .hero-text > p { font-size: 1.3rem; opacity: 0.95; max-width: 500px; }
-        .hero-text .hero-buttons { margin-top: 30px; }
+  --ink-950: #080B18;
+  --ink-900: #0C1124;
+  --ink-800: #141B33;
+  --ink-700: #1E2742;
 
-        /* Hero screenshots */
-        .hero-screenshots { display: flex; flex-direction: column; gap: 24px; }
-        .hero-shot { position: relative; }
-        .hero-shot img {
-            width: 100%; border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-        }
-        .hero-shot-caption {
-            margin-bottom: 10px; display: flex; align-items: baseline; gap: 8px;
-        }
-        .hero-shot-caption h3 {
-            font-size: 1rem; color: rgba(255,255,255,0.95); margin: 0; white-space: nowrap;
-        }
-        .hero-shot-caption p {
-            font-size: 0.9rem; color: rgba(255,255,255,0.75); margin: 0; line-height: 1.4;
-        }
-        .hero-kbd {
-            display: inline-block; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 4px; padding: 1px 6px; font-family: 'SF Mono', monospace;
-            font-size: 0.8rem; color: white;
-        }
+  --bg: #FBFCFE;
+  --surface: #FFFFFF;
+  --surface-2: #F5F7FC;
+  --surface-3: #EDF1F9;
+  --line: #E2E7F2;
+  --line-strong: #CFD6E6;
+  --text: #171E2F;
+  --text-2: #475069;
+  --text-3: #6B7590;
 
-        /* Features */
-        .features { padding: 80px 0; background: #f8f9fa; }
-        .features h2 { text-align: center; font-size: 2.5rem; margin-bottom: 60px; color: #2d3748; }
-        .feature-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;
-        }
-        .feature-card {
-            padding: 30px; border-radius: 12px; background: #f8f9fa;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .feature-card h3 { font-size: 1.5rem; margin-bottom: 15px; color: #667eea; }
-        .feature-card p { color: #4a5568; line-height: 1.8; }
+  --shadow-sm: 0 1px 2px rgba(14, 22, 48, .05), 0 1px 3px rgba(14, 22, 48, .04);
+  --shadow-md: 0 4px 12px rgba(14, 22, 48, .07), 0 2px 4px rgba(14, 22, 48, .04);
+  --shadow-lg: 0 18px 44px rgba(14, 22, 48, .12), 0 4px 12px rgba(14, 22, 48, .06);
+  --shadow-brand: 0 10px 30px rgba(91, 127, 255, .28);
 
-        /* Install */
-        .install { padding: 80px 0; background: white; }
-        .install h2 { text-align: center; font-size: 2.5rem; margin-bottom: 60px; color: #2d3748; }
-        .install-content { max-width: 900px; margin: 0 auto; }
-        .install-main {
-            background: #f8f9fa; padding: 50px; border-radius: 16px; border: 3px solid #667eea;
-        }
-        .install-main h3 { font-size: 2rem; margin-bottom: 20px; color: #2d3748; text-align: center; }
-        .install-main > p {
-            font-size: 1.2rem; color: #4a5568; text-align: center; margin-bottom: 30px; line-height: 1.8;
-        }
-        .install-features { background: white; padding: 30px; border-radius: 12px; margin: 30px 0; }
-        .install-features h4 { font-size: 1.3rem; color: #667eea; margin-bottom: 15px; }
-        .install-features ul { list-style: none; padding: 0; }
-        .install-features li { padding: 10px 0; color: #4a5568; font-size: 1.05rem; line-height: 1.6; }
-        .install-note {
-            margin-top: 20px; padding: 15px; background: #fff3cd;
-            border-left: 4px solid #ffc107; border-radius: 6px; text-align: center;
-        }
-        .install-note p { margin: 0; color: #856404; }
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 22px;
+  --r-pill: 999px;
 
-        /* Platforms */
-        .platforms { padding: 80px 0; background: #f8f9fa; }
-        .platforms h2 { text-align: center; font-size: 2.5rem; margin-bottom: 60px; color: #2d3748; }
-        .platform-grid {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px;
-        }
-        .platform-card {
-            background: white; padding: 40px 30px; border-radius: 12px; text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column;
-        }
-        .platform-card h3 { font-size: 1.8rem; margin-bottom: 15px; color: #2d3748; }
-        .platform-card > p { color: #718096; margin-bottom: 20px; flex-grow: 1; }
+  --mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Pretendard, Roboto, 'Helvetica Neue', sans-serif;
 
-        /* Buttons */
-        .btn {
-            display: inline-block; padding: 12px 30px; background: #667eea; color: white;
-            text-decoration: none; border-radius: 6px; font-weight: 600; transition: background 0.3s ease;
-        }
-        .btn:hover { background: #5568d3; }
-        .btn-secondary { background: #48bb78; }
-        .btn-secondary:hover { background: #38a169; }
+  --maxw: 1140px;
+}
 
-        /* CLI tabs */
-        .cli-tabs { margin-top: auto; }
-        .cli-tab-buttons { display: flex; gap: 0; margin-bottom: 0; }
-        .cli-tab-btn {
-            flex: 1; padding: 10px 16px; border: none; cursor: pointer;
-            font-size: 0.9rem; font-weight: 600; transition: all 0.2s ease;
-            background: #e2e8f0; color: #718096;
-        }
-        .cli-tab-btn:first-child { border-radius: 8px 0 0 0; }
-        .cli-tab-btn:last-child { border-radius: 0 8px 0 0; }
-        .cli-tab-btn.active { background: #1a202c; color: #68d391; }
-        .cli-tab-content {
-            display: none; background: #1a202c; border-radius: 0 0 8px 8px;
-            padding: 16px; position: relative; text-align: left;
-        }
-        .cli-tab-content.active { display: block; }
-        .cli-tab-content code {
-            color: #68d391; font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-            font-size: 0.85rem; word-break: break-all; display: block; padding-right: 50px;
-        }
-        .cli-tab-content .copy-btn {
-            position: absolute; top: 12px; right: 12px;
-            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
-            color: #a0aec0; padding: 4px 10px; border-radius: 4px;
-            cursor: pointer; font-size: 0.8rem; transition: all 0.2s ease;
-        }
-        .cli-tab-content .copy-btn:hover { background: rgba(255,255,255,0.2); color: white; }
-        .cli-tab-content .copy-btn.copied { background: #48bb78; color: white; border-color: #48bb78; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #090D1A;
+    --surface: #111729;
+    --surface-2: #161D33;
+    --surface-3: #1D263F;
+    --line: #232C47;
+    --line-strong: #303A59;
+    --text: #EAEEF9;
+    --text-2: #AFB8D0;
+    --text-3: #8891AD;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, .35);
+    --shadow-lg: 0 18px 44px rgba(0, 0, 0, .5);
+    --brand-fg: var(--brand-400);
+    --violet-fg: #B79BFF;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #090D1A;
+  --surface: #111729;
+  --surface-2: #161D33;
+  --surface-3: #1D263F;
+  --line: #232C47;
+  --line-strong: #303A59;
+  --text: #EAEEF9;
+  --text-2: #AFB8D0;
+  --text-3: #8891AD;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 18px 44px rgba(0, 0, 0, .5);
+  --brand-fg: var(--brand-400);
+  --violet-fg: #B79BFF;
+}
 
-        /* CTA */
-        .cta {
-            padding: 80px 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white; text-align: center;
-        }
-        .cta h2 { font-size: 2.5rem; margin-bottom: 20px; }
-        .cta p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.95; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* What's new banner */
-        .whatsnew { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); padding: 50px 0; border-top: 1px solid #f59e0b33; border-bottom: 1px solid #f59e0b33; }
-        .whatsnew-inner { max-width: 980px; margin: 0 auto; padding: 0 20px; }
-        .whatsnew-pill { display: inline-block; background: #d97706; color: white; font-size: 0.75rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; letter-spacing: 0.05em; text-transform: uppercase; }
-        .whatsnew h2 { font-size: 2rem; margin: 14px 0 8px; color: #78350f; }
-        .whatsnew-lede { color: #78350f; opacity: 0.85; font-size: 1.05rem; margin-bottom: 28px; }
-        .whatsnew-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
-        .whatsnew-item { background: rgba(255,255,255,0.7); padding: 18px 20px; border-radius: 10px; border: 1px solid rgba(217,119,6,0.18); }
-        .whatsnew-item h3 { font-size: 1.05rem; margin: 0 0 6px; color: #92400e; display: flex; gap: 8px; align-items: center; }
-        .whatsnew-item p { color: #4a3a1a; font-size: 0.95rem; line-height: 1.55; margin: 0; }
-        .whatsnew-item code { background: #1f2937; color: #fde68a; padding: 1px 6px; border-radius: 4px; font-size: 0.85em; }
-        .whatsnew-item .kbd { display: inline-block; background: #fff; color: #92400e; border: 1px solid #d97706; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-family: ui-monospace, SFMono-Regular, monospace; font-size: 0.8em; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
 
-        /* Footer */
-        footer { background: #2d3748; color: white; padding: 40px 0; text-align: center; }
-        footer a { color: #667eea; text-decoration: none; }
-        footer a:hover { text-decoration: underline; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* Korean breaks at any character by default, which splits words across lines.
+     keep-all wraps at word boundaries; break-word still rescues long strings. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
 
-        /* Language visibility */
-        body.lang-ko [data-lang="en"] { display: none; }
-        body.lang-en [data-lang="ko"] { display: none; }
-        a.view-platform { display: inline-block; }
+/* Headings read better with evened-out line lengths; body text avoids orphans. */
+h1, h2, h3, h4, .hero-lede, .sec-head p, .shot-note, .tip, .install-note {
+  text-wrap: balance;
+}
+p, li, .omni-empty, .foot-copy { text-wrap: pretty; }
 
-        .feature-card [data-lang="en"], .feature-card [data-lang="ko"],
-        .platform-card [data-lang="en"], .platform-card [data-lang="ko"] { display: inline; }
-        .feature-card [data-lang="ko"], .platform-card [data-lang="ko"] { display: none; }
-        body.lang-ko .feature-card [data-lang="ko"], body.lang-ko .platform-card [data-lang="ko"] { display: inline; }
-        body.lang-ko .feature-card [data-lang="en"], body.lang-ko .platform-card [data-lang="en"] { display: none; }
-        body.lang-en .feature-card [data-lang="en"], body.lang-en .platform-card [data-lang="en"] { display: inline; }
-        body.lang-en .feature-card [data-lang="ko"], body.lang-en .platform-card [data-lang="ko"] { display: none; }
+/* Anything holding a URL or a command keeps breaking anywhere it must. */
+.tab-pane code, .omni-url, .omni-out, code { word-break: break-all; }
 
-        @media (max-width: 768px) {
-            .hero-text h1 { font-size: 2.5rem; }
-            .hero-text h1 img { width: 60px; height: 60px; }
-            .hero-text > p { font-size: 1.1rem; }
-            .hero-layout { grid-template-columns: 1fr; gap: 40px; }
-            .hero-text { text-align: center; }
-            .hero-text > p { margin: 0 auto; }
-            .hero-text .hero-buttons { text-align: center; }
-            .hero-text h1 { justify-content: center; }
-            .hero-shot-caption { justify-content: center; }
-            .features h2, .platforms h2, .install h2, .cta h2 { font-size: 2rem; }
-            .lang-switch { top: 10px; right: 10px; }
-            .lang-switch select { padding: 6px 12px; font-size: 0.9rem; }
-            .install-main { padding: 30px 20px; }
-            .install-features { padding: 20px; }
-            .platform-grid { grid-template-columns: 1fr; }
-        }
-    </style>
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+
+.icon { width: 1em; height: 1em; flex: none; stroke-width: 1.75; }
+
+h1, h2, h3, h4 { line-height: 1.2; letter-spacing: -.02em; font-weight: 650; }
+
+/* ---- Section scaffolding ------------------------------------------------ */
+section { padding: 104px 0; }
+.sec-head { max-width: 680px; margin: 0 auto 56px; text-align: center; }
+.sec-eyebrow {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .75rem; font-weight: 650; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--brand-fg); background: color-mix(in srgb, var(--brand-500) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-500) 22%, transparent);
+  padding: 5px 12px; border-radius: var(--r-pill); margin-bottom: 18px;
+}
+.sec-head h2 { font-size: clamp(1.8rem, 3.4vw, 2.5rem); margin-bottom: 14px; }
+.sec-head p { color: var(--text-2); font-size: 1.08rem; }
+
+/* ---- Floating controls -------------------------------------------------- */
+.controls {
+  position: fixed; top: 16px; right: 16px; z-index: 100;
+  display: flex; gap: 8px; align-items: center;
+  padding: 6px; border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+}
+.seg { display: flex; background: var(--surface-2); border-radius: var(--r-pill); padding: 3px; }
+.seg button {
+  border: 0; background: transparent; cursor: pointer; color: var(--text-3);
+  font: inherit; font-size: .82rem; font-weight: 600; padding: 5px 12px;
+  border-radius: var(--r-pill); transition: color .18s, background .18s;
+}
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.icon-btn {
+  display: grid; place-items: center; width: 34px; height: 34px;
+  border: 0; border-radius: 50%; background: var(--surface-2); color: var(--text-2);
+  cursor: pointer; font-size: 1rem; transition: background .18s, color .18s, transform .18s;
+}
+.icon-btn:hover { background: var(--surface-3); color: var(--text); }
+.icon-btn:active { transform: scale(.94); }
+.seg-icons button { padding: 5px 9px; display: grid; place-items: center; font-size: .95rem; }
+
+/* ---- Hero --------------------------------------------------------------- */
+.hero {
+  position: relative; overflow: hidden; padding: 112px 0 96px;
+  background: var(--ink-950);
+  color: #fff;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(900px 480px at 18% -8%, rgba(91, 127, 255, .40), transparent 62%),
+    radial-gradient(760px 420px at 88% 8%, rgba(139, 92, 246, .34), transparent 60%),
+    radial-gradient(520px 320px at 60% 102%, rgba(24, 191, 218, .14), transparent 66%);
+}
+.hero::after {
+  content: ''; position: absolute; inset: 0; opacity: .35;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(760px 520px at 50% 18%, #000 35%, transparent 78%);
+  -webkit-mask-image: radial-gradient(760px 520px at 50% 18%, #000 35%, transparent 78%);
+}
+.hero .container { position: relative; z-index: 1; }
+.hero-layout { display: grid; grid-template-columns: 1.02fr .98fr; gap: 64px; align-items: center; }
+
+.brand { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+.brand img { width: 56px; height: 56px; border-radius: 14px; box-shadow: var(--shadow-brand); }
+.brand-name { font-size: 2rem; font-weight: 700; letter-spacing: -.03em; }
+.brand-tag {
+  font-family: var(--mono); font-size: .76rem; color: var(--accent-400);
+  border: 1px solid color-mix(in srgb, var(--accent-400) 34%, transparent);
+  background: color-mix(in srgb, var(--accent-400) 12%, transparent);
+  padding: 3px 9px; border-radius: var(--r-pill);
+}
+
+.hero h1 {
+  font-size: clamp(2.3rem, 5vw, 3.5rem); font-weight: 700; letter-spacing: -.035em;
+  margin-bottom: 20px;
+}
+.hero h1 .grad {
+  background: linear-gradient(100deg, var(--brand-400), var(--violet-500) 58%, var(--accent-400));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-lede { font-size: 1.16rem; color: rgba(255, 255, 255, .76); max-width: 30rem; margin-bottom: 34px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+
+.hero-stats { display: flex; gap: 28px; margin-top: 40px; flex-wrap: wrap; }
+.hero-stat .n {
+  font-size: 1.45rem; font-weight: 700; letter-spacing: -.02em;
+  background: linear-gradient(100deg, var(--brand-400), var(--accent-400));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-stat .l { font-size: .82rem; color: rgba(255, 255, 255, .56); }
+
+/* Screenshot frames */
+.shots { display: flex; flex-direction: column; gap: 22px; }
+.shot {
+  border-radius: var(--r-lg); overflow: hidden;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .11);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+  transition: transform .4s cubic-bezier(.2, .7, .3, 1), border-color .4s;
+}
+.shot:hover { transform: translateY(-4px); border-color: rgba(123, 150, 255, .4); }
+.shot img { width: 100%; display: block; }
+.shot-note {
+  padding: 11px 14px; font-size: .82rem; color: rgba(255, 255, 255, .6);
+  border-top: 1px solid rgba(255, 255, 255, .07);
+}
+.kbd {
+  display: inline-block; font-family: var(--mono); font-size: .78em; font-weight: 600;
+  padding: 1px 6px; border-radius: 5px;
+  background: rgba(255, 255, 255, .1); border: 1px solid rgba(255, 255, 255, .2);
+  color: #fff;
+}
+.kbd-l {
+  display: inline-block; font-family: var(--mono); font-size: .8em; font-weight: 600;
+  padding: 1px 6px; border-radius: 5px; color: var(--text);
+  background: var(--surface); border: 1px solid var(--line-strong); border-bottom-width: 2px;
+}
+
+/* ---- Buttons ------------------------------------------------------------ */
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 13px 26px; border-radius: var(--r-pill);
+  font-weight: 650; font-size: .98rem; text-decoration: none; cursor: pointer;
+  border: 1px solid transparent; transition: transform .18s, box-shadow .18s, background .18s, border-color .18s;
+}
+.btn-primary {
+  background: linear-gradient(100deg, var(--brand-500), var(--violet-500));
+  color: #fff; box-shadow: var(--shadow-brand);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(91, 127, 255, .4); }
+.btn-ghost-light { color: #fff; border-color: rgba(255, 255, 255, .24); background: rgba(255, 255, 255, .06); }
+.btn-ghost-light:hover { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .4); }
+.btn-ghost {
+  color: var(--text); border-color: var(--line-strong); background: var(--surface);
+}
+.btn-ghost:hover { background: var(--surface-2); border-color: var(--brand-500); color: var(--brand-fg); }
+
+/* ---- Interactive demo --------------------------------------------------- */
+.demo { background: var(--surface-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.demo-wrap { max-width: 760px; margin: 0 auto; }
+.omnibox {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-xl); box-shadow: var(--shadow-lg); overflow: hidden;
+}
+.omni-top {
+  display: flex; align-items: center; gap: 12px; padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.omni-prefix {
+  display: inline-flex; align-items: center; gap: 6px; flex: none;
+  font-family: var(--mono); font-weight: 700; font-size: .95rem; color: #fff;
+  background: linear-gradient(100deg, var(--brand-500), var(--violet-500));
+  padding: 5px 11px; border-radius: var(--r-sm);
+}
+.omni-chip {
+  display: inline-flex; align-items: center; gap: 7px; flex: none;
+  font-family: var(--mono); font-size: .9rem; font-weight: 650; color: var(--brand-fg);
+  background: color-mix(in srgb, var(--brand-500) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--brand-500) 28%, transparent);
+  padding: 4px 10px; border-radius: var(--r-sm);
+}
+.omni-chip[hidden] { display: none; }
+
+#demoInput {
+  flex: 1; border: 0; outline: 0; background: transparent; color: var(--text);
+  font-family: var(--mono); font-size: 1.05rem; min-width: 0;
+}
+#demoInput::placeholder { color: var(--text-3); }
+.omni-hint { display: flex; gap: 6px; flex: none; }
+
+.omni-list { max-height: 310px; overflow-y: auto; }
+.omni-row {
+  display: flex; align-items: center; gap: 13px; padding: 12px 20px; cursor: pointer;
+  border-left: 3px solid transparent;
+}
+.omni-row + .omni-row { border-top: 1px solid var(--line); }
+.omni-row[aria-selected="true"] {
+  background: color-mix(in srgb, var(--brand-500) 8%, transparent);
+  border-left-color: var(--brand-500);
+}
+.omni-ico {
+  display: grid; place-items: center; width: 32px; height: 32px; flex: none;
+  border-radius: var(--r-sm); font-size: .95rem;
+  background: color-mix(in srgb, var(--brand-500) 12%, transparent); color: var(--brand-fg);
+}
+.omni-row[data-tpl="1"] .omni-ico {
+  background: color-mix(in srgb, var(--violet-500) 14%, transparent); color: var(--violet-fg);
+}
+.omni-main { min-width: 0; flex: 1; }
+.omni-path { display: block; font-family: var(--mono); font-size: .92rem; font-weight: 600; }
+.omni-path mark { background: transparent; color: var(--brand-fg); font-weight: 750; }
+.omni-url { display: block; font-size: .8rem; color: var(--text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.omni-badge {
+  flex: none; font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--violet-fg); background: color-mix(in srgb, var(--violet-500) 13%, transparent);
+  border-radius: var(--r-pill); padding: 3px 9px;
+}
+.omni-empty { padding: 26px 20px; text-align: center; color: var(--text-3); font-size: .93rem; }
+
+.omni-foot {
+  display: flex; align-items: center; gap: 12px; padding: 13px 20px;
+  background: var(--surface-2); border-top: 1px solid var(--line);
+  font-size: .84rem; color: var(--text-2); min-height: 52px;
+}
+.omni-foot .icon { color: var(--accent-500); }
+.omni-out { font-family: var(--mono); font-size: .84rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.omni-out b { color: var(--brand-fg); font-weight: 700; }
+.demo-tips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 22px; }
+.tip {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .85rem; color: var(--text-2);
+  background: var(--surface); border: 1px solid var(--line);
+  padding: 7px 13px; border-radius: var(--r-pill);
+}
+.tip .icon { color: var(--brand-500); }
+
+/* ---- What's new --------------------------------------------------------- */
+.whatsnew { background: var(--bg); }
+.wn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; }
+.wn-item {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md);
+  padding: 22px; transition: border-color .22s, transform .22s, box-shadow .22s;
+}
+.wn-item:hover { border-color: color-mix(in srgb, var(--brand-500) 42%, transparent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.wn-item h3 { display: flex; align-items: center; gap: 10px; font-size: 1.02rem; margin-bottom: 9px; }
+.wn-item h3 .icon { color: var(--brand-500); font-size: 1.15rem; }
+.wn-item p { color: var(--text-2); font-size: .93rem; line-height: 1.6; }
+.wn-item code {
+  font-family: var(--mono); font-size: .85em; padding: 1px 6px; border-radius: 5px;
+  background: var(--surface-3); color: var(--violet-fg);
+}
+.metric { display: flex; align-items: baseline; gap: 9px; margin-top: 12px; font-family: var(--mono); font-size: .86rem; }
+.metric .was { color: var(--text-3); text-decoration: line-through; }
+.metric .now { color: #0E9F6E; font-weight: 700; }
+:root[data-theme="dark"] .metric .now { color: #34D399; }
+
+/* ---- Features ----------------------------------------------------------- */
+.features { background: var(--surface-2); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.feature-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 28px; position: relative; overflow: hidden;
+  transition: transform .25s cubic-bezier(.2,.7,.3,1), box-shadow .25s, border-color .25s;
+}
+.feature-card::before {
+  content: ''; position: absolute; left: 0; top: 0; height: 3px; width: 100%;
+  background: linear-gradient(90deg, var(--brand-500), var(--violet-500));
+  transform: scaleX(0); transform-origin: left; transition: transform .3s;
+}
+.feature-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: transparent; }
+.feature-card:hover::before { transform: scaleX(1); }
+.f-ico {
+  display: grid; place-items: center; width: 44px; height: 44px; margin-bottom: 18px;
+  border-radius: var(--r-md); font-size: 1.3rem; color: #fff;
+  background: linear-gradient(135deg, var(--brand-500), var(--violet-500));
+  box-shadow: 0 6px 16px rgba(91, 127, 255, .3);
+}
+.feature-card h3 { font-size: 1.14rem; margin-bottom: 10px; }
+.feature-card p { color: var(--text-2); font-size: .95rem; }
+.feature-card code {
+  font-family: var(--mono); font-size: .85em; padding: 1px 6px; border-radius: 5px;
+  background: var(--surface-3); color: var(--violet-fg);
+}
+
+/* ---- Install ------------------------------------------------------------ */
+.install-card {
+  max-width: 880px; margin: 0 auto; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg); overflow: hidden;
+}
+.install-head {
+  padding: 34px 40px; text-align: center; color: #fff; position: relative; overflow: hidden;
+  background: linear-gradient(100deg, var(--brand-600), var(--violet-600));
+}
+.install-head::after {
+  content: ''; position: absolute; inset: 0; opacity: .5;
+  background: radial-gradient(420px 220px at 78% 0%, rgba(56, 217, 239, .3), transparent 65%);
+}
+.install-head > * { position: relative; z-index: 1; }
+.install-head .f-ico {
+  margin: 0 auto 16px; background: rgba(255, 255, 255, .16);
+  box-shadow: none; border: 1px solid rgba(255, 255, 255, .22);
+}
+.install-head h3 { font-size: 1.6rem; margin-bottom: 8px; }
+.install-head p { color: rgba(255, 255, 255, .82); font-size: 1rem; }
+.install-body { padding: 36px 40px 40px; }
+.check-list { list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px 26px; }
+.check-list li { display: flex; align-items: flex-start; gap: 11px; color: var(--text-2); font-size: .96rem; }
+.check-list .icon { color: #0E9F6E; margin-top: .35em; font-size: 1.05rem; }
+:root[data-theme="dark"] .check-list .icon { color: #34D399; }
+.install-actions { margin-top: 32px; text-align: center; }
+.install-note {
+  display: flex; align-items: center; gap: 11px; justify-content: center;
+  margin-top: 24px; padding: 13px 18px; border-radius: var(--r-md);
+  background: var(--surface-2); border: 1px solid var(--line);
+  color: var(--text-2); font-size: .9rem;
+}
+.install-note .icon { color: var(--brand-500); font-size: 1.1rem; }
+
+/* ---- Platforms ---------------------------------------------------------- */
+.platform-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 22px; }
+.platform-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 30px; display: flex; flex-direction: column;
+}
+.platform-card h3 { display: flex; align-items: center; gap: 11px; font-size: 1.25rem; margin-bottom: 12px; }
+.platform-card h3 .icon { color: var(--brand-500); font-size: 1.3rem; }
+.platform-card > p { color: var(--text-2); font-size: .95rem; margin-bottom: 22px; flex: 1; }
+.tabs { margin-top: auto; }
+.tab-btns { display: flex; gap: 4px; padding: 4px; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-sm) var(--r-sm) 0 0; border-bottom: 0; }
+.tab-btn {
+  flex: 1; padding: 8px 14px; border: 0; cursor: pointer; border-radius: 6px;
+  font: inherit; font-size: .86rem; font-weight: 650; color: var(--text-3);
+  background: transparent; transition: background .18s, color .18s;
+}
+.tab-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+.tab-pane { display: none; position: relative; background: var(--ink-900); border-radius: 0 0 var(--r-sm) var(--r-sm); padding: 16px 56px 16px 18px; }
+.tab-pane.active { display: block; }
+.tab-pane code {
+  display: block; font-family: var(--mono); font-size: .82rem; line-height: 1.6;
+  color: #8BE9C0; word-break: break-all;
+}
+.tab-pane code .cmd { color: #7B96FF; }
+.copy-btn {
+  position: absolute; top: 12px; right: 12px;
+  display: grid; place-items: center; width: 30px; height: 30px;
+  border: 1px solid rgba(255, 255, 255, .16); border-radius: 7px;
+  background: rgba(255, 255, 255, .07); color: rgba(255, 255, 255, .7);
+  cursor: pointer; font-size: .9rem; transition: all .18s;
+}
+.copy-btn:hover { background: rgba(255, 255, 255, .15); color: #fff; }
+.copy-btn.copied { background: #0E9F6E; border-color: #0E9F6E; color: #fff; }
+.copy-btn .ck { display: none; }
+.copy-btn.copied .cp { display: none; }
+.copy-btn.copied .ck { display: block; }
+
+/* ---- CTA ---------------------------------------------------------------- */
+.cta { position: relative; overflow: hidden; background: var(--ink-950); color: #fff; text-align: center; }
+.cta::before {
+  content: ''; position: absolute; inset: 0;
+  background:
+    radial-gradient(640px 320px at 50% 0%, rgba(91, 127, 255, .4), transparent 66%),
+    radial-gradient(520px 300px at 82% 100%, rgba(139, 92, 246, .3), transparent 64%);
+}
+.cta .container { position: relative; z-index: 1; }
+.cta h2 { font-size: clamp(1.8rem, 3.4vw, 2.4rem); margin-bottom: 14px; }
+.cta p { color: rgba(255, 255, 255, .74); font-size: 1.06rem; margin-bottom: 30px; }
+
+/* ---- Footer ------------------------------------------------------------- */
+footer { background: var(--ink-950); color: rgba(255, 255, 255, .6); padding: 44px 0; border-top: 1px solid rgba(255, 255, 255, .08); }
+.foot-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.foot-brand {
+  display: flex; align-items: center; gap: 11px; color: #fff; font-weight: 650;
+  background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; font-size: 1rem;
+  transition: opacity .18s;
+}
+.foot-brand:hover { opacity: .75; }
+.foot-brand img { width: 28px; height: 28px; border-radius: 8px; }
+footer a { color: rgba(255, 255, 255, .62); text-decoration: none; font-size: .92rem; }
+footer a:hover { color: #fff; }
+.foot-links { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.foot-copy { font-size: .88rem; }
+
+/* ---- Reveal on scroll --------------------------------------------------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.3,1); }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+
+/* ---- i18n --------------------------------------------------------------- */
+body.lang-en [data-lang="ko"], body.lang-ko [data-lang="en"] { display: none !important; }
+
+/* ---- Responsive --------------------------------------------------------- */
+@media (max-width: 900px) {
+  .hero-layout { grid-template-columns: 1fr; gap: 44px; }
+  .platform-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  section { padding: 72px 0; }
+  .hero { padding: 92px 0 72px; }
+  .container { padding: 0 16px; }
+  .controls { top: 10px; right: 10px; }
+  .seg button { padding: 5px 9px; font-size: .78rem; }
+  .hero-cta { flex-direction: column; align-items: stretch; }
+  .hero-cta .btn { justify-content: center; }
+  .install-head, .install-body { padding-left: 22px; padding-right: 22px; }
+  .omni-hint { display: none; }
+  .omni-top { padding: 14px; }
+  .omni-row { padding: 11px 14px; }
+}
+</style>
 </head>
-<body>
-    <div class="lang-switch">
-        <select onchange="setLanguage(this.value)" aria-label="Language">
-            <option value="en">English</option>
-            <option value="ko">한국어</option>
-        </select>
+<body class="lang-en">
+
+<!-- Icon sprite: stroke icons at 24x24, inherit currentColor. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="i-search" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></g>
+    <g id="i-bolt" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></g>
+    <g id="i-target" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4"/></g>
+    <g id="i-folder" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/></g>
+    <g id="i-puzzle" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.5a2 2 0 1 1 4 0V6h3.5a1.5 1.5 0 0 1 1.5 1.5V11h1.5a2 2 0 1 1 0 4H18v3.5a1.5 1.5 0 0 1-1.5 1.5H13v-1.5a2 2 0 1 0-4 0V21H5.5A1.5 1.5 0 0 1 4 19.5V16h1.5a2 2 0 1 0 0-4H4V7.5A1.5 1.5 0 0 1 5.5 6H9V4.5Z"/></g>
+    <g id="i-lock" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></g>
+    <g id="i-globe" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 9h17M3.5 15h17"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></g>
+    <g id="i-braces" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H8a2 2 0 0 0-2 2v3.5L4 12l2 2.5V18a2 2 0 0 0 2 2h1"/><path d="M15 4h1a2 2 0 0 1 2 2v3.5L20 12l-2 2.5V18a2 2 0 0 1-2 2h-1"/></g>
+    <g id="i-monitor" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M9 20h6M12 16v4"/></g>
+    <g id="i-terminal" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/></g>
+    <g id="i-copy" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15h-.5A1.5 1.5 0 0 1 3 13.5v-9A1.5 1.5 0 0 1 4.5 3h9A1.5 1.5 0 0 1 15 4.5V5"/></g>
+    <g id="i-check" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7"/></g>
+    <g id="i-arrow" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></g>
+    <g id="i-corner" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10 5 14l4 4"/><path d="M5 14h9a5 5 0 0 0 5-5V6"/></g>
+    <g id="i-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></g>
+    <g id="i-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></g>
+    <g id="i-download" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10m0 0 4-4m-4 4-4-4"/><path d="M5 17v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1"/></g>
+    <g id="i-gauge" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a8.5 8.5 0 1 1 16 0"/><path d="m14.5 10.5-3 4"/></g>
+    <g id="i-cloud-off" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 18.5h9.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 7.1 8.6"/><path d="M4 4.5 20 20"/></g>
+    <g id="i-info" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></g>
+    <g id="i-star" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m12 4 2.4 5 5.6.8-4 3.9 1 5.5-5-2.7-5 2.7 1-5.5-4-3.9 5.6-.8L12 4Z"/></g>
+    <g id="i-keyboard" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6.5 10h.01M10 10h.01M13.5 10h.01M17 10h.01M7.5 14h9"/></g>
+    <g id="i-layers" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></g>
+  </defs>
+</svg>
+
+<div class="controls">
+  <div class="seg" role="group" aria-label="Language">
+    <button type="button" data-setlang="en" aria-pressed="true">EN</button>
+    <button type="button" data-setlang="ko" aria-pressed="false">한국어</button>
+  </div>
+  <div class="seg seg-icons" role="group" aria-label="Theme">
+    <button type="button" data-settheme="system" aria-pressed="true" aria-label="System theme" title="System">
+      <svg class="icon" viewBox="0 0 24 24"><use href="#i-monitor"/></svg>
+    </button>
+    <button type="button" data-settheme="light" aria-pressed="false" aria-label="Light theme" title="Light">
+      <svg class="icon" viewBox="0 0 24 24"><use href="#i-sun"/></svg>
+    </button>
+    <button type="button" data-settheme="dark" aria-pressed="false" aria-label="Dark theme" title="Dark">
+      <svg class="icon" viewBox="0 0 24 24"><use href="#i-moon"/></svg>
+    </button>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="container">
+    <div class="hero-layout">
+      <div>
+        <div class="brand">
+          <img src="logo.svg" alt="Slash">
+          <span class="brand-name">Slash</span>
+          <span class="brand-tag">v1.2.5</span>
+        </div>
+        <h1>
+          <span data-lang="en">Your bookmarks, <span class="grad">by path</span>.</span>
+          <span data-lang="ko">북마크를, <span class="grad">경로로</span>.</span>
+        </h1>
+        <p class="hero-lede" data-lang="en">Type <span class="kbd">s/work/docs</span> in the address bar and land on the bookmark. Fuzzy search, URL templates, and an overlay that works on any page.</p>
+        <p class="hero-lede" data-lang="ko">주소창에 <span class="kbd">s/work/docs</span> 를 치면 바로 그 북마크로 가요. 퍼지&nbsp;검색, URL&nbsp;템플릿, 어떤 페이지에서나 열리는 오버레이까지.</p>
+        <div class="hero-cta">
+          <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn btn-primary">
+            <svg class="icon" viewBox="0 0 24 24"><use href="#i-download"/></svg>
+            <span data-lang="en">Install Chrome Extension</span>
+            <span data-lang="ko">Chrome 확장 설치</span>
+          </a>
+          <a href="#platforms" class="btn btn-ghost-light">
+            <svg class="icon" viewBox="0 0 24 24"><use href="#i-layers"/></svg>
+            <span data-lang="en">Desktop &amp; CLI</span>
+            <span data-lang="ko">데스크톱 &amp; CLI</span>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="n">0.48s</div>
+            <div class="l"><span data-lang="en">desktop cold start</span><span data-lang="ko">데스크톱 콜드&nbsp;스타트</span></div>
+          </div>
+          <div class="hero-stat">
+            <div class="n">100%</div>
+            <div class="l"><span data-lang="en">local, no telemetry</span><span data-lang="ko">완전 로컬, 수집 없음</span></div>
+          </div>
+          <div class="hero-stat">
+            <div class="n">3</div>
+            <div class="l"><span data-lang="en">surfaces: browser, desktop, CLI</span><span data-lang="ko">브라우저 · 데스크톱 · CLI</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="shots">
+        <div class="shot">
+          <img src="overlay.png" alt="Slash fuzzy search overlay">
+          <div class="shot-note">
+            <span data-lang="en"><span class="kbd">⌘</span> <span class="kbd">.</span> opens it over any page.</span>
+            <span data-lang="ko"><span class="kbd">⌘</span> <span class="kbd">.</span> 로 어떤 페이지 위에서나 열려요</span>
+          </div>
+        </div>
+        <div class="shot">
+          <img src="searchbar.png" alt="Slash address bar navigation">
+          <div class="shot-note">
+            <span data-lang="en"><span class="kbd">s</span> then the path. No menus, no folder digging.</span>
+            <span data-lang="ko"><span class="kbd">s</span> 뒤에 경로만 치면 돼요. 메뉴도 폴더 탐색도 필요 없어요</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="demo" id="try">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">
+        <svg class="icon" viewBox="0 0 24 24"><use href="#i-keyboard"/></svg>
+        <span data-lang="en">Try it</span><span data-lang="ko">체험하기</span>
+      </span>
+      <h2><span data-lang="en">Type a path, watch it resolve</span><span data-lang="ko">경로를 치면 바로 좁혀져요</span></h2>
     </div>
 
-    <header>
-        <div class="container">
-            <div class="hero-layout">
-                <div class="hero-text">
-                    <h1><img src="logo.svg" alt="Slash Logo">Slash</h1>
-                    <p data-lang="en">Fast bookmark management with fuzzy search. Access your bookmarks instantly from anywhere.</p>
-                    <p data-lang="ko">퍼지 검색으로 빠른 북마크 관리.<br/>어디서나 즉시 북마크에 접근하세요.</p>
-                    <div class="hero-buttons">
-                        <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px;" data-lang="en">Install Chrome Extension</a>
-                        <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px;" data-lang="ko">Chrome 확장 프로그램 설치</a>
-                        <br style="margin-bottom: 12px;">
-                        <a class="view-platform" href="#platforms" style="color: white; text-decoration: underline; opacity: 0.9; margin-top: 24px;" data-lang="en">View all platforms</a>
-                        <a class="view-platform" href="#platforms" style="color: white; text-decoration: underline; opacity: 0.9; margin-top: 24px;" data-lang="ko">모든 플랫폼 보기</a>
-                    </div>
-                </div>
-                <div class="hero-screenshots">
-                    <div class="hero-shot">
-                        <div class="hero-shot-caption">
-                            <h3 data-lang="en">⚡ Fuzzy Search</h3>
-                            <h3 data-lang="ko">⚡ 퍼지 검색</h3>
-                            <p data-lang="en"><span class="hero-kbd">⌘</span> + <span class="hero-kbd">.</span> to search bookmarks instantly</p>
-                            <p data-lang="ko"><span class="hero-kbd">⌘</span> + <span class="hero-kbd">.</span> 으로 북마크 즉시 검색</p>
-                        </div>
-                        <img src="overlay.png" alt="Fuzzy search overlay">
-                    </div>
-                    <div class="hero-shot">
-                        <div class="hero-shot-caption">
-                            <h3 data-lang="en">🎯 Quick Navigate</h3>
-                            <h3 data-lang="ko">🎯 빠른 이동</h3>
-                            <p data-lang="en">Type <span class="hero-kbd">s/path/to</span> in address bar to jump directly</p>
-                            <p data-lang="ko">주소창에 <span class="hero-kbd">s/path/to</span> 입력으로 바로 이동</p>
-                        </div>
-                        <img src="searchbar.png" alt="Address bar quick navigation">
-                    </div>
-                </div>
-            </div>
+    <div class="demo-wrap reveal">
+      <div class="omnibox">
+        <div class="omni-top">
+          <span class="omni-prefix">s/</span>
+          <span class="omni-chip" id="demoChip" hidden></span>
+          <input id="demoInput" type="text" autocomplete="off" spellcheck="false"
+                 aria-label="Demo search" aria-controls="demoList">
+          <span class="omni-hint" id="demoHint"></span>
         </div>
-    </header>
-
-    <section class="whatsnew" id="whatsnew">
-        <div class="whatsnew-inner">
-            <span class="whatsnew-pill">v1.1.1</span>
-            <h2 data-lang="en">What's New</h2>
-            <h2 data-lang="ko">새로운 기능</h2>
-            <p class="whatsnew-lede" data-lang="en">Variable input, refined — chip-style fields everywhere and quoted arguments where you type a single line.</p>
-            <p class="whatsnew-lede" data-lang="ko">변수 입력이 더 깔끔해졌어요 — 어디서나 칩 형태의 입력 필드, 한 줄로 입력하는 곳에서는 따옴표로 값 묶기.</p>
-            <div class="whatsnew-grid">
-                <div class="whatsnew-item">
-                    <h3>🔄 <span data-lang="en">Desktop auto-update</span><span data-lang="ko">데스크톱 자동 업데이트</span></h3>
-                    <p data-lang="en">The desktop app now checks for new signed releases on launch and offers a one-click update. You can also check anytime from Settings.</p>
-                    <p data-lang="ko">데스크톱 앱이 실행 시 서명된 새 버전을 확인해 한 번에 업데이트할 수 있습니다. 설정에서 언제든 직접 확인할 수도 있어요.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>🔵 <span data-lang="en">Per-variable chips</span><span data-lang="ko">변수별 칩 입력</span></h3>
-                    <p data-lang="en">In the overlay, popup, and desktop, each variable becomes its own chip. Type a value with spaces directly — no quoting needed. Move between chips with <span class="kbd">Space</span> / <span class="kbd">Tab</span> / arrows.</p>
-                    <p data-lang="ko">오버레이·팝업·데스크톱에서 각 변수가 칩으로 분리됩니다. 공백이 포함된 값도 따옴표 없이 그대로 입력하세요. 칩 사이 이동은 <span class="kbd">Space</span> / <span class="kbd">Tab</span> / 방향키.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>❝ <span data-lang="en">Quote to group args</span><span data-lang="ko">따옴표로 값 묶기</span></h3>
-                    <p data-lang="en">In the address bar and CLI, wrap a multi-word value in quotes so it stays one argument: <code>s/jira "create bug"</code>.</p>
-                    <p data-lang="ko">주소창과 CLI에서는 여러 단어로 된 값을 따옴표로 묶어 하나의 인자로 전달합니다: <code>s/jira "create bug"</code>.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>🧩 <span data-lang="en">URL templates</span><span data-lang="ko">URL 템플릿</span></h3>
-                    <p data-lang="en">Save a bookmark URL like <code>https://jira/browse/{0}</code> and pass the placeholder at runtime: <code>s/jira CADGROWTH-140</code>.</p>
-                    <p data-lang="ko">북마크 URL을 <code>https://jira/browse/{0}</code> 처럼 저장하고 실행 시점에 값을 넘기세요: <code>s/jira CADGROWTH-140</code>.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>⌨️ <span data-lang="en">Tab → variable mode</span><span data-lang="ko">Tab → 변수 모드</span></h3>
-                    <p data-lang="en">In the overlay or desktop search window, hit <span class="kbd">Tab</span> on a template bookmark to enter variable input mode with a live preview.</p>
-                    <p data-lang="ko">오버레이나 데스크톱 검색창에서 템플릿 북마크 위에 <span class="kbd">Tab</span> 을 누르면 라이브 미리보기와 함께 변수 입력 모드로 진입합니다.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>🎯 <span data-lang="en">Default URL</span><span data-lang="ko">기본 URL</span></h3>
-                    <p data-lang="en">Set a default URL per template — opening <code>s/jira</code> without args jumps to your dashboard, while <code>s/jira KEY-1</code> still substitutes.</p>
-                    <p data-lang="ko">템플릿마다 기본 URL을 설정하세요. <code>s/jira</code> 처럼 인자 없이 호출하면 대시보드로, <code>s/jira KEY-1</code>은 변수 치환으로 동작합니다.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>🧪 <span data-lang="en">Per-variable defaults</span><span data-lang="ko">변수별 기본값</span></h3>
-                    <p data-lang="en">Write <code>{0:home}</code> in the URL — the value <code>home</code> is used whenever the user doesn't pass an arg.</p>
-                    <p data-lang="ko">URL에 <code>{0:home}</code> 처럼 작성하면 인자가 빠졌을 때 <code>home</code> 이 사용됩니다.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>💻 <span data-lang="en">CLI variable support</span><span data-lang="ko">CLI 변수 지원</span></h3>
-                    <p data-lang="en">The <code>s</code> command now mirrors the address bar: <code>s wiki hello</code> resolves the template and opens the substituted URL.</p>
-                    <p data-lang="ko"><code>s</code> 명령이 주소창과 동일하게 동작합니다: <code>s wiki hello</code> 로 템플릿을 풀어 치환된 URL을 엽니다.</p>
-                </div>
-                <div class="whatsnew-item">
-                    <h3>🪟 <span data-lang="en">Chip mode everywhere</span><span data-lang="ko">어디서나 칩 모드</span></h3>
-                    <p data-lang="en">The popup and desktop search windows now share the same <span class="kbd">Tab</span> → chip flow as the in-browser overlay — including <span class="kbd">Tab</span> autocomplete to the top match when there's no exact path.</p>
-                    <p data-lang="ko">팝업과 데스크톱 검색창에서도 오버레이와 동일한 <span class="kbd">Tab</span> → 칩 입력 흐름이 동작합니다 — 정확히 일치하는 경로가 없으면 <span class="kbd">Tab</span> 으로 최상위 결과를 자동완성합니다.</p>
-                </div>
-            </div>
+        <div class="omni-list" id="demoList" role="listbox" aria-label="Bookmark results"></div>
+        <div class="omni-foot">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-corner"/></svg>
+          <span class="omni-out" id="demoOut"></span>
         </div>
-    </section>
+      </div>
 
-    <section class="install" id="install">
-        <div class="container">
-            <h2 data-lang="en">Get Started</h2>
-            <h2 data-lang="ko">시작하기</h2>
-            <div class="install-content">
-                <div class="install-main">
-                    <h3 data-lang="en">🌐 Chrome Extension</h3>
-                    <h3 data-lang="ko">🌐 Chrome 확장 프로그램</h3>
-                    <p data-lang="en">The core of Slash.<br/>Install the Chrome extension to get started with fast bookmark management.</p>
-                    <p data-lang="ko">Slash의 핵심입니다.<br/>Chrome 확장 프로그램을 설치하여 빠른 북마크 관리를 시작하세요.</p>
-                    
-                    <div class="install-features">
-                        <div data-lang="en">
-                            <h4>Key Features:</h4>
-                            <ul>
-                                <li>⚡ Instant fuzzy search from address bar (type "/" to activate)</li>
-                                <li>⭐ Mark frequently used bookmarks as favorites</li>
-                                <li>📁 Choose custom root bookmark folder</li>
-                                <li>⌨️ Keyboard shortcuts for quick access</li>
-                                <li>🌐 Multi-language support (English, Korean)</li>
-                                <li>🔒 100% local - no data leaves your device</li>
-                            </ul>
-                        </div>
-                        <div data-lang="ko">
-                            <h4>주요 기능:</h4>
-                            <ul>
-                                <li>⚡ 주소창에서 즉시 퍼지 검색 ("/" 입력으로 활성화)</li>
-                                <li>⭐ 자주 사용하는 북마크를 즐겨찾기로 표시</li>
-                                <li>📁 커스텀 루트 북마크 폴더 선택</li>
-                                <li>⌨️ 빠른 접근을 위한 키보드 단축키</li>
-                                <li>🌐 다국어 지원 (영어, 한국어)</li>
-                                <li>🔒 100% 로컬 - 데이터가 기기를 벗어나지 않음</li>
-                            </ul>
-                        </div>
-                    </div>
+      <div class="demo-tips">
+        <span class="tip">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-bolt"/></svg>
+          <span data-lang="en"><b>wd</b> finds <b>work/docs</b></span><span data-lang="ko"><b>wd</b> 로 <b>work/docs</b> 를 찾아요</span>
+        </span>
+        <span class="tip">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-braces"/></svg>
+          <span data-lang="en"><b>Tab</b> on <b>gh</b> for variable mode</span><span data-lang="ko"><b>gh</b> 에서 <b>Tab</b> 을 누르면 변수&nbsp;입력&nbsp;모드예요</span>
+        </span>
+        <span class="tip">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-star"/></svg>
+          <span data-lang="en">Arrows to move, Enter to resolve</span><span data-lang="ko">방향키로 옮기고 Enter 로 확정해요</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
 
-                    <div style="margin-top: 30px; text-align: center;">
-                        <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn" style="font-size: 1.2rem; padding: 15px 50px;" data-lang="en">Install from Chrome Web Store</a>
-                        <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn" style="font-size: 1.2rem; padding: 15px 50px;" data-lang="ko">Chrome 웹 스토어에서 설치</a>
-                    </div>
+<section class="whatsnew" id="whatsnew">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">v1.2.5</span>
+      <h2><span data-lang="en">What's New</span><span data-lang="ko">새로운 기능</span></h2>
+      <p>
+        <span data-lang="en">A much faster desktop app, and bookmarks that resolve correctly when Chrome keeps them in your Google account.</span>
+        <span data-lang="ko">데스크톱 앱이 훨씬 빨라졌고, Google 계정에 저장된 북마크까지 제대로 찾아가요.</span>
+      </p>
+    </div>
+    <div class="wn-grid reveal">
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-gauge"/></svg><span data-lang="en">Instant cold start</span><span data-lang="ko">즉각적인 첫&nbsp;실행</span></h3>
+        <p data-lang="en">The desktop app scanned every extension's database to find its own. It now reads only where its marker can be, and caches the result until Chrome writes again.</p>
+        <p data-lang="ko">자기 저장소를 찾으려고 모든 확장의 DB 를 뒤지던 동작을 없앴어요. 마커가 있을 수 있는 곳만 읽고, Chrome 이 다시 쓸 때까지 캐시해요.</p>
+        <div class="metric"><span class="was">21s</span><svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow"/></svg><span class="now">0.48s</span></div>
+      </div>
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-bolt"/></svg><span data-lang="en">No stutter on <span class="kbd-l">Tab</span></span><span data-lang="ko"><span class="kbd-l">Tab</span> 진입 끊김 제거</span></h3>
+        <p data-lang="en">Entering variable mode re-read the history store every time and resized the window three round trips late. Both are gone.</p>
+        <p data-lang="ko">변수&nbsp;모드에 들어갈 때마다 히스토리 저장소를 다시 읽던 것도, 창 크기 변경이 IPC 왕복 3번 뒤에야 적용되던 것도 함께 고쳤어요.</p>
+        <div class="metric"><span class="was">269ms</span><svg class="icon" viewBox="0 0 24 24"><use href="#i-arrow"/></svg><span class="now">0.12ms</span></div>
+      </div>
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-folder"/></svg><span data-lang="en">Account bookmarks</span><span data-lang="ko">계정&nbsp;북마크 지원</span></h3>
+        <p data-lang="en">Signed into Chrome, your bookmarks may live in the account store rather than the local one. Desktop and CLI now read both and merge them the way Chrome shows them.</p>
+        <p data-lang="ko">Chrome 에 로그인하면 북마크가 로컬이 아닌 계정&nbsp;저장소에 들어가요. 데스크톱과 CLI 가 두 저장소를 모두 읽어 Chrome 과 똑같이 합쳐서 보여줘요.</p>
+      </div>
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-braces"/></svg><span data-lang="en">Per-variable chips</span><span data-lang="ko">변수별 칩 입력</span></h3>
+        <p data-lang="en">Each <code>{0}</code> becomes its own field in the overlay, popup, and desktop. Values with spaces need no quoting; move between them with <span class="kbd-l">Tab</span>.</p>
+        <p data-lang="ko">오버레이·팝업·데스크톱에서 <code>{0}</code> 마다 입력&nbsp;칩이 따로 생겨요. 공백이 있어도 따옴표 없이 적고, 이동은 <span class="kbd-l">Tab</span> 으로 해요.</p>
+      </div>
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-target"/></svg><span data-lang="en">Default URL</span><span data-lang="ko">기본&nbsp;URL</span></h3>
+        <p data-lang="en">Give a template a fallback so the bare path still opens something sensible when you pass no value.</p>
+        <p data-lang="ko">값 없이 경로만 입력해도 의미 있는 곳이 열리도록, 템플릿마다 기본값을 정해 둘 수 있어요.</p>
+      </div>
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-download"/></svg><span data-lang="en">Signed auto-update</span><span data-lang="ko">서명된 자동&nbsp;업데이트</span></h3>
+        <p data-lang="en">The desktop app checks for updates on launch and from Settings, installs the signed build, and relaunches itself.</p>
+        <p data-lang="ko">실행할 때와 설정에서 업데이트를 확인하고, 서명된&nbsp;빌드를 설치한 뒤 알아서 다시 시작해요.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-                    <div class="install-note">
-                        <p data-lang="en"><strong>Note:</strong> Works with Chrome, Edge, Brave, and other Chromium-based browsers.</p>
-                        <p data-lang="ko"><strong>참고:</strong> Chrome, Edge, Brave 및 기타 Chromium 기반 브라우저에서 작동합니다.</p>
-                    </div>
-                </div>
-            </div>
+<section class="install" id="install">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow"><span data-lang="en">Get started</span><span data-lang="ko">시작하기</span></span>
+      <h2><span data-lang="en">One extension is the whole thing</span><span data-lang="ko">확장 하나면 충분해요</span></h2>
+      <p>
+        <span data-lang="en">Everything else is optional. Desktop and CLI read the same bookmarks and the same settings.</span>
+        <span data-lang="ko">나머지는 전부 선택이에요. 데스크톱과 CLI 는 같은 북마크와 같은 설정을 읽어요.</span>
+      </p>
+    </div>
+
+    <div class="install-card reveal">
+      <div class="install-head">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div>
+        <h3><span data-lang="en">Chrome Extension</span><span data-lang="ko">Chrome 확장&nbsp;프로그램</span></h3>
+        <p>
+          <span data-lang="en">The core of Slash: search, templates, favorites, and the overlay.</span>
+          <span data-lang="ko">Slash 의 핵심: 검색, 템플릿, 즐겨찾기, 오버레이</span>
+        </p>
+      </div>
+      <div class="install-body">
+        <ul class="check-list">
+          <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg><span data-lang="en">Fuzzy search straight from the address bar</span><span data-lang="ko">주소창에서 바로 퍼지&nbsp;검색</span></li>
+          <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg><span data-lang="en">Overlay on any page with a global shortcut</span><span data-lang="ko">전역&nbsp;단축키로 어떤 페이지에서나 오버레이</span></li>
+          <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg><span data-lang="en">URL templates with per-variable input</span><span data-lang="ko">변수별 입력을 지원하는 URL&nbsp;템플릿</span></li>
+          <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg><span data-lang="en">Favorites and a custom root folder</span><span data-lang="ko">즐겨찾기와 커스텀&nbsp;루트&nbsp;폴더</span></li>
+          <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg><span data-lang="en">English and Korean</span><span data-lang="ko">영어 · 한국어 지원</span></li>
+          <li><svg class="icon" viewBox="0 0 24 24"><use href="#i-check"/></svg><span data-lang="en">Nothing leaves your device</span><span data-lang="ko">데이터가 기기를 벗어나지 않음</span></li>
+        </ul>
+        <div class="install-actions">
+          <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn btn-primary">
+            <svg class="icon" viewBox="0 0 24 24"><use href="#i-download"/></svg>
+            <span data-lang="en">Install from Chrome Web Store</span>
+            <span data-lang="ko">Chrome 웹&nbsp;스토어에서 설치</span>
+          </a>
         </div>
-    </section>
-
-    <section class="features">
-        <div class="container">
-            <h2 data-lang="en">Features</h2>
-            <h2 data-lang="ko">주요 기능</h2>
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3><span data-lang="en">⚡ Fuzzy Search</span><span data-lang="ko">⚡ 퍼지 검색</span></h3>
-                    <p data-lang="en">Find your bookmarks instantly with intelligent fuzzy search. Type a few characters and get exactly what you need.</p>
-                    <p data-lang="ko">지능형 퍼지 검색으로 북마크를 즉시 찾으세요. 몇 글자만 입력하면 원하는 것을 정확히 찾을 수 있습니다.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><span data-lang="en">🎯 Quick Access</span><span data-lang="ko">🎯 빠른 접근</span></h3>
-                    <p data-lang="en">Access bookmarks directly from your browser's address bar. No need to open menus or navigate through folders.</p>
-                    <p data-lang="ko">브라우저 주소창에서 바로 북마크에 접근하세요. 메뉴를 열거나 폴더를 탐색할 필요가 없습니다.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><span data-lang="en">📂 Smart Organization</span><span data-lang="ko">📂 스마트 정리</span></h3>
-                    <p data-lang="en">Manage your bookmarks efficiently with favorites, custom root folders, and intuitive organization.</p>
-                    <p data-lang="ko">즐겨찾기, 커스텀 루트 폴더, 직관적인 구성으로 북마크를 효율적으로 관리하세요.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><span data-lang="en">🧩 Extensible</span><span data-lang="ko">🧩 확장 가능</span></h3>
-                    <p data-lang="en">Chrome extension as the core, with optional desktop and CLI plugins for enhanced functionality.</p>
-                    <p data-lang="ko">Chrome 확장 프로그램을 핵심으로, 선택적으로 데스크톱과 CLI 플러그인으로 기능을 확장할 수 있습니다.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><span data-lang="en">🔒 Privacy First</span><span data-lang="ko">🔒 프라이버시 우선</span></h3>
-                    <p data-lang="en">All data stays local. No tracking, no cloud sync, no data collection. Your bookmarks are yours alone.</p>
-                    <p data-lang="ko">모든 데이터는 로컬에 저장됩니다. 추적 없음, 클라우드 동기화 없음, 데이터 수집 없음. 북마크는 오직 당신의 것입니다.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><span data-lang="en">🌐 Multi-language</span><span data-lang="ko">🌐 다국어 지원</span></h3>
-                    <p data-lang="en">Support for multiple languages including English and Korean, with more coming soon.</p>
-                    <p data-lang="ko">영어와 한국어를 포함한 다국어를 지원하며, 더 많은 언어가 추가될 예정입니다.</p>
-                </div>
-                <div class="feature-card">
-                    <h3><span data-lang="en">🧩 URL Templates (new in 1.1.0)</span><span data-lang="ko">🧩 URL 템플릿 (1.1.0 신규)</span></h3>
-                    <p data-lang="en">Save bookmarks with <code>{0}</code>-style variables. Pass values from the address bar, the overlay, or the CLI — Tab opens an interactive picker with a live preview.</p>
-                    <p data-lang="ko">북마크에 <code>{0}</code> 같은 변수를 저장하고 주소창·오버레이·CLI에서 값을 넘기세요. Tab으로 라이브 미리보기 입력 모드를 열 수 있습니다.</p>
-                </div>
-            </div>
+        <div class="install-note">
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-info"/></svg>
+          <span data-lang="en">Works on Chrome, Edge, Brave, and other Chromium browsers.</span>
+          <span data-lang="ko">Chrome, Edge, Brave 등 Chromium 기반 브라우저에서 동작해요</span>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section class="platforms" id="platforms">
-        <div class="container">
-            <h2 data-lang="en">Extend with Desktop & CLI</h2>
-            <h2 data-lang="ko">데스크톱 & CLI로 확장</h2>
-            <p style="text-align: center; color: #718096; margin-bottom: 40px; font-size: 1.1rem;" data-lang="en">Optional plugins to enhance your Slash experience</p>
-            <p style="text-align: center; color: #718096; margin-bottom: 40px; font-size: 1.1rem;" data-lang="ko">Slash 경험을 향상시키는 선택적 플러그인</p>
-            <div class="platform-grid">
-                <div class="platform-card">
-                    <h3><span data-lang="en">💻 Desktop App</span><span data-lang="ko">💻 데스크톱 앱</span></h3>
-                    <p data-lang="en">Native desktop application for macOS and Windows. Access bookmarks with global shortcuts even when browser is closed. Features system tray integration and auto-launch on startup.</p>
-                    <p data-lang="ko">macOS, Windows용 네이티브 데스크톱 애플리케이션. 브라우저가 닫혀있어도 전역 단축키로 북마크에 접근. 시스템 트레이 통합 및 시작 시 자동 실행 기능.</p>
-                    <div class="cli-tabs">
-                        <div class="cli-tab-buttons">
-                            <button class="cli-tab-btn active" onclick="switchTab('desktop', 'mac')" data-tabgroup="desktop" data-tab="mac">macOS</button>
-                            <button class="cli-tab-btn" onclick="switchTab('desktop', 'win')" data-tabgroup="desktop" data-tab="win">Windows</button>
-                        </div>
-                        <div class="cli-tab-content active" id="desktop-tab-mac">
-                            <code>curl -fsSL https://ytw0728.github.io/docs/slash/install.desktop.mac.sh | bash</code>
-                            <button class="copy-btn" onclick="copyToClipboard(this, 'curl -fsSL https://ytw0728.github.io/docs/slash/install.desktop.mac.sh | bash')">Copy</button>
-                        </div>
-                        <div class="cli-tab-content" id="desktop-tab-win">
-                            <code>irm https://ytw0728.github.io/docs/slash/install.desktop.win.ps1 | iex</code>
-                            <button class="copy-btn" onclick="copyToClipboard(this, 'irm https://ytw0728.github.io/docs/slash/install.desktop.win.ps1 | iex')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="platform-card">
-                    <h3><span data-lang="en">⌨️ CLI Tool</span><span data-lang="ko">⌨️ CLI 도구</span></h3>
-                    <p data-lang="en">Command-line interface for power users. Search and open bookmarks directly from your terminal. Perfect for integrating into scripts and workflows.</p>
-                    <p data-lang="ko">파워 유저를 위한 커맨드라인 인터페이스. 터미널에서 직접 북마크를 검색하고 열 수 있습니다. 스크립트와 워크플로우에 통합하기 완벽합니다.</p>
-                    <div class="cli-tabs">
-                        <div class="cli-tab-buttons">
-                            <button class="cli-tab-btn active" onclick="switchTab('cli', 'mac')" data-tabgroup="cli" data-tab="mac">macOS / Linux</button>
-                            <button class="cli-tab-btn" onclick="switchTab('cli', 'win')" data-tabgroup="cli" data-tab="win">Windows</button>
-                        </div>
-                        <div class="cli-tab-content active" id="cli-tab-mac">
-                            <code>curl -fsSL https://ytw0728.github.io/docs/slash/install.mac.sh | bash</code>
-                            <button class="copy-btn" onclick="copyToClipboard(this, 'curl -fsSL https://ytw0728.github.io/docs/slash/install.mac.sh | bash')">Copy</button>
-                        </div>
-                        <div class="cli-tab-content" id="cli-tab-win">
-                            <code>irm https://ytw0728.github.io/docs/slash/install.win.ps1 | iex</code>
-                            <button class="copy-btn" onclick="copyToClipboard(this, 'irm https://ytw0728.github.io/docs/slash/install.win.ps1 | iex')">Copy</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<section class="features">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow"><span data-lang="en">Features</span><span data-lang="ko">주요 기능</span></span>
+      <h2><span data-lang="en">Built around one gesture</span><span data-lang="ko">하나의 동작을 중심으로</span></h2>
+      <p>
+        <span data-lang="en">Name the path, get the page. Everything here exists to keep that gesture short.</span>
+        <span data-lang="ko">경로를 말하면 페이지가 열려요. 모든 기능은 그 동작을 짧게 유지하려고 있어요.</span>
+      </p>
+    </div>
+    <div class="feature-grid reveal">
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-search"/></svg></div>
+        <h3><span data-lang="en">Fuzzy search</span><span data-lang="ko">퍼지&nbsp;검색</span></h3>
+        <p data-lang="en">Letters can skip. <code>wd</code> finds <code>work/docs</code>, and the closest match sorts first.</p>
+        <p data-lang="ko">글자를 건너뛰어도 돼요. <code>wd</code> 로 <code>work/docs</code> 를 찾고, 가장 가까운 결과가 맨 위로 와요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-target"/></svg></div>
+        <h3><span data-lang="en">Address bar first</span><span data-lang="ko">주소창 우선</span></h3>
+        <p data-lang="en">Where you already are. Type <code>s</code>, a space, then the path. No menu, no new tab to get there.</p>
+        <p data-lang="ko">이미 손이 가 있는 곳이에요. <code>s</code>, 공백, 경로 순으로 치면 끝이라 메뉴도 새 탭도 필요 없어요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-braces"/></svg></div>
+        <h3><span data-lang="en">URL templates</span><span data-lang="ko">URL&nbsp;템플릿</span></h3>
+        <p data-lang="en">Store <code>{0}</code> in a bookmark and pass values from the bar, the overlay, or the CLI. <span class="kbd-l">Tab</span> opens a live preview.</p>
+        <p data-lang="ko">북마크에 <code>{0}</code> 을 넣고 주소창·오버레이·CLI 에서 값을 넘기세요. <span class="kbd-l">Tab</span> 을 누르면 라이브&nbsp;미리보기가 열려요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-folder"/></svg></div>
+        <h3><span data-lang="en">Your own tree</span><span data-lang="ko">내 폴더 구조 그대로</span></h3>
+        <p data-lang="en">Pick any folder as the root. Paths mirror your bookmark tree, so there is nothing new to learn.</p>
+        <p data-lang="ko">어떤 폴더든 루트로 지정할 수 있어요. 경로가 북마크&nbsp;트리 그대로라 새로 외울 것이 없어요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-layers"/></svg></div>
+        <h3><span data-lang="en">Three surfaces, one source</span><span data-lang="ko">세 지면, 하나의 원본</span></h3>
+        <p data-lang="en">Browser, desktop, and CLI read the same bookmarks and the same settings. Change the root once.</p>
+        <p data-lang="ko">브라우저·데스크톱·CLI 가 같은 북마크와 설정을 써요. 루트는 한 번만 바꾸면 돼요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-cloud-off"/></svg></div>
+        <h3><span data-lang="en">Local by construction</span><span data-lang="ko">구조적으로 로컬</span></h3>
+        <p data-lang="en">No account, no sync service, no analytics. Slash reads the bookmark store already on your machine.</p>
+        <p data-lang="ko">계정도, 동기화 서버도, 분석 도구도 없어요. 이미 기기에 있는 북마크 저장소를 읽을 뿐이에요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-lock"/></svg></div>
+        <h3><span data-lang="en">Least privilege</span><span data-lang="ko">최소 권한</span></h3>
+        <p data-lang="en">Bookmarks and storage, nothing more. The <a href="privacy.html" style="color:var(--brand-fg)">privacy policy</a> lists every permission and why it is there.</p>
+        <p data-lang="ko">북마크와 저장소 권한만 써요. 모든 권한과 그 이유는 <a href="privacy.html" style="color:var(--brand-fg)">개인정보 처리방침</a>에 적어 두었어요.</p>
+      </div>
+      <div class="feature-card">
+        <div class="f-ico"><svg class="icon" viewBox="0 0 24 24"><use href="#i-globe"/></svg></div>
+        <h3><span data-lang="en">Bilingual</span><span data-lang="ko">다국어</span></h3>
+        <p data-lang="en">English and Korean across every surface, picked up from one setting in the extension.</p>
+        <p data-lang="ko">확장에서 한 번만 고르면 모든 지면에 영어·한국어가 함께 적용돼요.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="platforms" id="platforms">
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow"><span data-lang="en">Optional</span><span data-lang="ko">선택 설치</span></span>
+      <h2><span data-lang="en">Desktop &amp; CLI</span><span data-lang="ko">데스크톱 &amp; CLI</span></h2>
+      <p>
+        <span data-lang="en">Reach the same bookmarks with the browser closed, or from a script.</span>
+        <span data-lang="ko">브라우저를 닫아 둔 채로도, 스크립트 안에서도 같은 북마크에 닿아요.</span>
+      </p>
+    </div>
+    <div class="platform-grid reveal">
+      <div class="platform-card">
+        <h3>
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-monitor"/></svg>
+          <span data-lang="en">Desktop app</span><span data-lang="ko">데스크톱 앱</span>
+        </h3>
+        <p data-lang="en">A global shortcut that works with Chrome closed, on macOS and Windows. Lives in the menu bar, launches at login, and updates itself.</p>
+        <p data-lang="ko">Chrome 이 꺼져 있어도 전역&nbsp;단축키가 동작해요. macOS·Windows 를 지원하고, 메뉴&nbsp;막대에 머물면서 로그인할 때 실행되고 스스로 업데이트해요.</p>
+        <div class="tabs">
+          <div class="tab-btns">
+            <button class="tab-btn active" data-tabgroup="desktop" data-tab="mac" type="button">macOS</button>
+            <button class="tab-btn" data-tabgroup="desktop" data-tab="win" type="button">Windows</button>
+          </div>
+          <div class="tab-pane active" id="desktop-tab-mac">
+            <code><span class="cmd">curl</span> -fsSL https://ytw0728.github.io/docs/slash/install.desktop.mac.sh | bash</code>
+            <button class="copy-btn" type="button" aria-label="Copy command"
+              data-copy="curl -fsSL https://ytw0728.github.io/docs/slash/install.desktop.mac.sh | bash">
+              <svg class="icon cp" viewBox="0 0 24 24"><use href="#i-copy"/></svg>
+              <svg class="icon ck" viewBox="0 0 24 24"><use href="#i-check"/></svg>
+            </button>
+          </div>
+          <div class="tab-pane" id="desktop-tab-win">
+            <code><span class="cmd">irm</span> https://ytw0728.github.io/docs/slash/install.desktop.win.ps1 | iex</code>
+            <button class="copy-btn" type="button" aria-label="Copy command"
+              data-copy="irm https://ytw0728.github.io/docs/slash/install.desktop.win.ps1 | iex">
+              <svg class="icon cp" viewBox="0 0 24 24"><use href="#i-copy"/></svg>
+              <svg class="icon ck" viewBox="0 0 24 24"><use href="#i-check"/></svg>
+            </button>
+          </div>
         </div>
-    </section>
+      </div>
 
-    <section class="cta">
-        <div class="container">
-            <h2 data-lang="en">Get Started Today</h2>
-            <h2 data-lang="ko">지금 시작하세요</h2>
-            <p data-lang="en">Start with the Chrome extension and expand with desktop or CLI as needed.</p>
-            <p data-lang="ko">Chrome 확장 프로그램으로 시작하고 필요에 따라 데스크톱이나 CLI로 확장하세요.</p>
-            <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px;" data-lang="en">Install Chrome Extension</a>
-            <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn" style="background: white; color: #667eea; font-size: 1.1rem; padding: 15px 40px;" data-lang="ko">Chrome 확장 프로그램 설치</a>
+      <div class="platform-card">
+        <h3>
+          <svg class="icon" viewBox="0 0 24 24"><use href="#i-terminal"/></svg>
+          <span data-lang="en">CLI</span><span data-lang="ko">CLI 도구</span>
+        </h3>
+        <p data-lang="en">One binary and no config file. It reads Chrome's bookmarks and the extension's settings directly, so you can open a path from a shell, a script, or an alias.</p>
+        <p data-lang="ko">설정 파일 없는 단일&nbsp;바이너리예요. Chrome 북마크와 확장 설정을 직접 읽어서, 셸·스크립트·알리아스 어디서든 경로를 열어요.</p>
+        <div class="tabs">
+          <div class="tab-btns">
+            <button class="tab-btn active" data-tabgroup="cli" data-tab="mac" type="button">macOS / Linux</button>
+            <button class="tab-btn" data-tabgroup="cli" data-tab="win" type="button">Windows</button>
+          </div>
+          <div class="tab-pane active" id="cli-tab-mac">
+            <code><span class="cmd">curl</span> -fsSL https://ytw0728.github.io/docs/slash/install.mac.sh | bash</code>
+            <button class="copy-btn" type="button" aria-label="Copy command"
+              data-copy="curl -fsSL https://ytw0728.github.io/docs/slash/install.mac.sh | bash">
+              <svg class="icon cp" viewBox="0 0 24 24"><use href="#i-copy"/></svg>
+              <svg class="icon ck" viewBox="0 0 24 24"><use href="#i-check"/></svg>
+            </button>
+          </div>
+          <div class="tab-pane" id="cli-tab-win">
+            <code><span class="cmd">irm</span> https://ytw0728.github.io/docs/slash/install.win.ps1 | iex</code>
+            <button class="copy-btn" type="button" aria-label="Copy command"
+              data-copy="irm https://ytw0728.github.io/docs/slash/install.win.ps1 | iex">
+              <svg class="icon cp" viewBox="0 0 24 24"><use href="#i-copy"/></svg>
+              <svg class="icon ck" viewBox="0 0 24 24"><use href="#i-check"/></svg>
+            </button>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <footer>
-        <div class="container">
-            <p data-lang="en">&copy; 2026 Slash. Bookmark management.</p>
-            <p data-lang="ko">&copy; 2026 Slash. 북마크 관리.</p>
-            <p style="margin-top: 10px;">
-                <a href="privacy.html" data-lang="en">Privacy Policy</a>
-                <a href="privacy.html" data-lang="ko">개인정보 처리방침</a>
-            </p>
-        </div>
-    </footer>
+<section class="cta">
+  <div class="container">
+    <h2><span data-lang="en">Start with the extension</span><span data-lang="ko">확장&nbsp;프로그램으로 시작</span></h2>
+    <p>
+      <span data-lang="en">Add desktop or CLI later. They pick up the settings you already made.</span>
+      <span data-lang="ko">데스크톱과 CLI 는 나중에 더해도 돼요. 이미 해 둔 설정을 그대로 읽어요.</span>
+    </p>
+    <a href="https://chromewebstore.google.com/detail/slash/dpkfaakpnlbkpbdlhcepeidolnicmbmo" class="btn btn-primary">
+      <svg class="icon" viewBox="0 0 24 24"><use href="#i-download"/></svg>
+      <span data-lang="en">Install Chrome Extension</span>
+      <span data-lang="ko">Chrome 확장 설치</span>
+    </a>
+  </div>
+</section>
 
-    <script>
-        let currentLang = localStorage.getItem('language') || 'en';
+<footer>
+  <div class="container">
+    <div class="foot-row">
+      <button type="button" class="foot-brand" data-totop aria-label="Back to top">
+        <img src="logo.svg" alt="">
+        <span>Slash</span>
+      </button>
+      <nav class="foot-links">
+        <a href="index.html#try"><span data-lang="en">Try it</span><span data-lang="ko">체험</span></a>
+        <a href="index.html#install"><span data-lang="en">Install</span><span data-lang="ko">설치</span></a>
+        <a href="index.html#platforms"><span data-lang="en">Desktop &amp; CLI</span><span data-lang="ko">데스크톱 &amp; CLI</span></a>
+        <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="ko">개인정보</span></a>
+        <a href="mailto:ytw0728@gmail.com">ytw0728@gmail.com</a>
+      </nav>
+      <div class="foot-copy">&copy; 2026 Slash</div>
+    </div>
+  </div>
+</footer>
 
-        function setLanguage(lang) {
-            currentLang = lang;
-            localStorage.setItem('language', lang);
-            document.body.classList.remove('lang-en', 'lang-ko');
-            document.body.classList.add('lang-' + lang);
-            var select = document.querySelector('.lang-switch select');
-            if (select) select.value = lang;
-        }
+<script>
+/* ---- Language ------------------------------------------------------------ */
+function setLanguage(lang) {
+  try { localStorage.setItem('language', lang); } catch (e) { /* private mode */ }
+  document.body.classList.remove('lang-en', 'lang-ko');
+  document.body.classList.add('lang-' + lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-setlang]').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.setlang === lang));
+  });
+  renderDemo();
+}
+document.querySelectorAll('[data-setlang]').forEach(function (b) {
+  b.addEventListener('click', function () { setLanguage(b.dataset.setlang); });
+});
 
-        function switchTab(group, tab) {
-            var card = document.querySelector('[data-tabgroup="' + group + '"][data-tab="' + tab + '"]').closest('.cli-tabs');
-            card.querySelectorAll('.cli-tab-btn').forEach(function(b) { b.classList.remove('active'); });
-            card.querySelectorAll('.cli-tab-content').forEach(function(c) { c.classList.remove('active'); });
-            card.querySelector('.cli-tab-btn[data-tab="' + tab + '"]').classList.add('active');
-            card.querySelector('#' + group + '-tab-' + tab).classList.add('active');
-        }
+/* ---- Theme (system / light / dark; system is the default) ---------------- */
+function applyTheme(mode) {
+  if (mode === 'light' || mode === 'dark') document.documentElement.setAttribute('data-theme', mode);
+  else document.documentElement.removeAttribute('data-theme');
+  document.querySelectorAll('[data-settheme]').forEach(function (b) {
+    b.setAttribute('aria-pressed', String(b.dataset.settheme === (mode || 'system')));
+  });
+}
+function setTheme(mode) {
+  applyTheme(mode);
+  try { localStorage.setItem('theme', mode); } catch (e) { /* private mode */ }
+}
+document.querySelectorAll('[data-settheme]').forEach(function (b) {
+  b.addEventListener('click', function () { setTheme(b.dataset.settheme); });
+});
 
-        function copyToClipboard(btn, text) {
-            navigator.clipboard.writeText(text).then(function() {
-                var original = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.classList.add('copied');
-                setTimeout(function() {
-                    btn.textContent = original;
-                    btn.classList.remove('copied');
-                }, 2000);
-            });
-        }
+/* ---- Tabs ---------------------------------------------------------------- */
+document.querySelectorAll('.tab-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    var group = btn.dataset.tabgroup, tab = btn.dataset.tab;
+    var scope = btn.closest('.tabs');
+    scope.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+    scope.querySelectorAll('.tab-pane').forEach(function (p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    scope.querySelector('#' + group + '-tab-' + tab).classList.add('active');
+  });
+});
 
-        setLanguage(currentLang);
-    </script>
+/* ---- Copy ---------------------------------------------------------------- */
+document.querySelectorAll('.copy-btn').forEach(function (btn) {
+  btn.addEventListener('click', function () {
+    navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+      btn.classList.add('copied');
+      setTimeout(function () { btn.classList.remove('copied'); }, 1800);
+    }).catch(function () { /* clipboard blocked */ });
+  });
+});
+
+/* ---- Interactive omnibox demo -------------------------------------------
+   Mirrors the real resolver: fuzzy path matching, Tab to autocomplete or to
+   enter variable mode on a template, Enter to resolve. Nothing navigates. */
+var BOOKMARKS = [
+  { path: 'work/docs',      url: 'https://docs.google.com/document/u/0' },
+  { path: 'work/mail',      url: 'https://mail.google.com' },
+  { path: 'work/calendar',  url: 'https://calendar.google.com' },
+  { path: 'git/pr',         url: 'https://github.com/pulls' },
+  { path: 'git/issues',     url: 'https://github.com/issues' },
+  { path: 'gh',             url: 'https://github.com/search?q={0}', tpl: true, varName: 'query' },
+  { path: 'design/figma',   url: 'https://figma.com/files' },
+  { path: 'deploy/staging', url: 'https://staging.example.com' }
+];
+
+var input = document.getElementById('demoInput');
+var list = document.getElementById('demoList');
+var out = document.getElementById('demoOut');
+var chip = document.getElementById('demoChip');
+var hint = document.getElementById('demoHint');
+
+var selected = 0;
+var matches = [];
+var chipItem = null;   // non-null while in variable mode
+var chipReturnTo = '';  // query to restore when leaving variable mode
+
+var STR = {
+  en: {
+    ph: 'work/docs', phVar: 'type a value',
+    empty: 'No bookmark matches that path.',
+    hint: 'Select a bookmark, then Enter.',
+    tabHint: 'Tab fills in a value.',
+    needs: 'needs a value'
+  },
+  ko: {
+    ph: 'work/docs', phVar: '값 입력',
+    empty: '일치하는 북마크가 없어요',
+    hint: '항목을 고르고 Enter 를 눌러요',
+    tabHint: 'Tab 을 누르면 값을 넣을 수 있어요',
+    needs: '값이 필요해요'
+  }
+};
+function lang() { return document.body.classList.contains('lang-ko') ? 'ko' : 'en'; }
+function esc(t) { return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+function kbd(k) { return '<span class="kbd-l">' + k + '</span>'; }
+
+/** Subsequence match; returns matched indexes, or null. Earlier + tighter wins. */
+function fuzzy(path, query) {
+  if (!query) return { idx: [], score: 0 };
+  var qi = 0, idx = [], gaps = 0, last = -1;
+  var pth = path.toLowerCase(), q = query.toLowerCase();
+  for (var i = 0; i < pth.length && qi < q.length; i++) {
+    if (pth[i] === q[qi]) {
+      idx.push(i);
+      if (last >= 0) gaps += i - last - 1;
+      last = i; qi++;
+    }
+  }
+  if (qi < q.length) return null;
+  return { idx: idx, score: idx[0] * 2 + gaps };
+}
+
+function highlight(path, idx) {
+  var set = {}; idx.forEach(function (i) { set[i] = true; });
+  var html = '';
+  for (var i = 0; i < path.length; i++) {
+    html += set[i] ? '<mark>' + esc(path[i]) + '</mark>' : esc(path[i]);
+  }
+  return html;
+}
+
+function parseQuery(raw) {
+  var trimmed = raw.trim();
+  var sp = trimmed.indexOf(' ');
+  if (sp === -1) return { path: trimmed, args: [] };
+  return { path: trimmed.slice(0, sp), args: trimmed.slice(sp + 1).split(/\s+/).filter(Boolean) };
+}
+
+function resolveUrl(b, value) {
+  if (!b.tpl) return { url: b.url, ready: true };
+  if (!value) return { url: b.url, ready: false };
+  return { url: b.url.replace('{0}', encodeURIComponent(value)), ready: true };
+}
+
+/* -- variable (chip) mode ------------------------------------------------- */
+function enterVarMode(b) {
+  chipItem = b;
+  chipReturnTo = input.value;
+  chip.hidden = false;
+  chip.textContent = b.path;
+  list.innerHTML = '';
+  input.value = '';
+  input.placeholder = STR[lang()].phVar;
+  hint.innerHTML = kbd('Esc') + kbd('Enter');
+  input.focus();
+  renderVarPreview();
+}
+
+function exitVarMode() {
+  chipItem = null;
+  chip.hidden = true;
+  chip.textContent = '';
+  input.value = chipReturnTo;
+  input.placeholder = STR[lang()].ph;
+  delete out.dataset.committed;
+  renderDemo();
+  input.focus();
+}
+
+function renderVarPreview() {
+  var t = STR[lang()];
+  var r = resolveUrl(chipItem, input.value.trim());
+  out.innerHTML = r.ready
+    ? '<b>&rarr;</b> ' + esc(r.url)
+    : '<b>{0}</b> ' + t.needs;
+}
+
+/* -- search mode ---------------------------------------------------------- */
+function renderDemo() {
+  var t = STR[lang()];
+  if (chipItem) { renderVarPreview(); return; }
+
+  input.placeholder = t.ph;
+  var q = parseQuery(input.value);
+
+  matches = [];
+  BOOKMARKS.forEach(function (b) {
+    var m = fuzzy(b.path, q.path);
+    if (m) matches.push({ b: b, m: m });
+  });
+  // With no query everything matches equally, so keep the declared order.
+  if (q.path) {
+    matches.sort(function (a, b) { return a.m.score - b.m.score || a.b.path.length - b.b.path.length; });
+  }
+  if (selected >= matches.length) selected = Math.max(0, matches.length - 1);
+
+  var sel = matches[selected];
+  hint.innerHTML = sel && sel.b.tpl
+    ? kbd('Tab') + kbd('Enter')
+    : kbd('↑') + kbd('↓') + kbd('Enter');
+
+  if (!matches.length) {
+    list.innerHTML = '<div class="omni-empty">' + t.empty + '</div>';
+    out.textContent = '';
+    return;
+  }
+
+  list.innerHTML = matches.map(function (x, i) {
+    var r = resolveUrl(x.b, q.args.join(' '));
+    return '<div class="omni-row" role="option" data-i="' + i + '" data-tpl="' + (x.b.tpl ? 1 : 0) + '"' +
+      ' aria-selected="' + (i === selected) + '">' +
+      '<span class="omni-ico"><svg class="icon" viewBox="0 0 24 24"><use href="' +
+        (x.b.tpl ? '#i-braces' : '#i-folder') + '"/></svg></span>' +
+      '<span class="omni-main">' +
+        '<span class="omni-path">' + highlight(x.b.path, x.m.idx) + '</span>' +
+        '<span class="omni-url">' + esc(r.url) + '</span>' +
+      '</span>' +
+      (x.b.tpl ? '<span class="omni-badge">{0}</span>' : '') +
+    '</div>';
+  }).join('');
+
+  Array.prototype.forEach.call(list.children, function (row) {
+    row.addEventListener('click', function () {
+      selected = Number(row.dataset.i);
+      renderDemo();
+      commit();
+    });
+  });
+
+  if (!out.dataset.committed) {
+    out.textContent = sel && sel.b.tpl ? t.tabHint : t.hint;
+  }
+}
+
+function commit() {
+  if (chipItem) { renderVarPreview(); return; }
+  var t = STR[lang()];
+  var sel = matches[selected];
+  if (!sel) return;
+  out.dataset.committed = '1';
+  var r = resolveUrl(sel.b, parseQuery(input.value).args.join(' '));
+  out.innerHTML = r.ready ? '<b>&rarr;</b> ' + esc(r.url) : '<b>{0}</b> ' + t.needs;
+}
+
+input.addEventListener('input', function () {
+  if (chipItem) { renderVarPreview(); return; }
+  delete out.dataset.committed;
+  selected = 0;
+  renderDemo();
+});
+
+input.addEventListener('keydown', function (e) {
+  if (chipItem) {
+    if (e.key === 'Escape') { e.preventDefault(); exitVarMode(); }
+    else if (e.key === 'Enter') { e.preventDefault(); renderVarPreview(); }
+    return;
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault(); selected = Math.min(selected + 1, matches.length - 1);
+    delete out.dataset.committed; renderDemo();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault(); selected = Math.max(selected - 1, 0);
+    delete out.dataset.committed; renderDemo();
+  } else if (e.key === 'Tab') {
+    var sel = matches[selected];
+    if (!sel) return;
+    e.preventDefault();
+    if (sel.b.tpl) {
+      enterVarMode(sel.b);
+    } else if (input.value.trim() !== sel.b.path) {
+      // Same as the real overlay: Tab completes to the selected result.
+      input.value = sel.b.path;
+      delete out.dataset.committed;
+      selected = 0;
+      renderDemo();
+    }
+  } else if (e.key === 'Enter') {
+    e.preventDefault(); commit();
+  }
+});
+
+/* ---- Reveal on scroll ----------------------------------------------------- */
+if ('IntersectionObserver' in window) {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { rootMargin: '0px 0px -10% 0px' });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+} else {
+  document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+}
+
+/* ---- Back to top --------------------------------------------------------- */
+document.querySelectorAll('[data-totop]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+
+/* ---- Boot ----------------------------------------------------------------- */
+(function () {
+  var savedTheme = null, savedLang = null;
+  try { savedTheme = localStorage.getItem('theme'); savedLang = localStorage.getItem('language'); } catch (e) { /* private mode */ }
+  applyTheme(savedTheme || 'system');
+  // Default to the browser's language; an explicit pick always wins.
+  var systemLang = (navigator.language || 'en').toLowerCase().indexOf('ko') === 0 ? 'ko' : 'en';
+  setLanguage(savedLang || systemLang);
+})();
+</script>
 </body>
 </html>
