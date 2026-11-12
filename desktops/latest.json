@@ -1,19 +1,19 @@
 {
-  "version": "1.2.3",
-  "notes": "Minor fixes.",
-  "pub_date": "2026-06-19T05:02:00Z",
+  "version": "1.2.5",
+  "notes": "Much faster desktop cold start, no stutter entering variable mode, and support for Chrome account bookmarks.",
+  "pub_date": "2026-11-12T10:56:17Z",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVh2bnBOM0diQ0s2MTU2V0pTVnBzT0JjWXgycFcrM09vYUlHd21pRlkyUVJIR1MwUy9kOHVpKytISWoycWwvV3YrSXZ4eWRGQ0hTRUNCSzNoSUY3dndNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODQ1MTc0CWZpbGU6U2xhc2guYXBwLnRhci5negoxbldGYXl6dG1RMkxPbGFNbVNvcE1kSnRCOEpqa0twSUQzZE1YcGl2WE5EanZzZllHOFJ3bGtyYk5xUUlrRS9ySEU2d3ZmaWxtWW0vYUMyNk8xUlBCUT09Cg==",
-      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.3/Slash_1.2.3_universal.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWNEdVRuTm1TRnh6TmUrZFE5ZGxPc2syK0lIYXFaVSszOE1TWUlTcjgyZ0o2c0RraVJxSzdGdWFOdUYvOVZZRkdiUWxZZkljdXBmQ001ZG0rbHNjSHdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NDgwNTEzCWZpbGU6U2xhc2guYXBwLnRhci5negpLdlMwMThDLys0TS8vRW1nMXF0aGx4ZCs1U0J5VHZYU0NteGhwZXBlMUh6R1IxZ3FpMHFxdWJTSXN3VDVjZHFXamZDaTBRam5CUDdyOFBWTmVlTXJCQT09Cg==",
+      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.5/Slash_1.2.5_universal.app.tar.gz"
     },
     "darwin-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVh2bnBOM0diQ0s2MTU2V0pTVnBzT0JjWXgycFcrM09vYUlHd21pRlkyUVJIR1MwUy9kOHVpKytISWoycWwvV3YrSXZ4eWRGQ0hTRUNCSzNoSUY3dndNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODQ1MTc0CWZpbGU6U2xhc2guYXBwLnRhci5negoxbldGYXl6dG1RMkxPbGFNbVNvcE1kSnRCOEpqa0twSUQzZE1YcGl2WE5EanZzZllHOFJ3bGtyYk5xUUlrRS9ySEU2d3ZmaWxtWW0vYUMyNk8xUlBCUT09Cg==",
-      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.3/Slash_1.2.3_universal.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWNEdVRuTm1TRnh6TmUrZFE5ZGxPc2syK0lIYXFaVSszOE1TWUlTcjgyZ0o2c0RraVJxSzdGdWFOdUYvOVZZRkdiUWxZZkljdXBmQ001ZG0rbHNjSHdNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NDgwNTEzCWZpbGU6U2xhc2guYXBwLnRhci5negpLdlMwMThDLys0TS8vRW1nMXF0aGx4ZCs1U0J5VHZYU0NteGhwZXBlMUh6R1IxZ3FpMHFxdWJTSXN3VDVjZHFXamZDaTBRam5CUDdyOFBWTmVlTXJCQT09Cg==",
+      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.5/Slash_1.2.5_universal.app.tar.gz"
     },
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVVNkSE1HaXU1V1l0YXg2VHBiZVB2KzNjdzVPMHZjMC83OGZYREFLYzRLMlpLWjZHRXh6cHR1UHhLKzB4T21VZFlRaDBBdzAycXdxUUNmSktKUW9VTncwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgxODQ1MjgxCWZpbGU6U2xhc2hfMS4yLjNfeDY0LXNldHVwLmV4ZQp2aDI2TzEwVERlVCtjSjVEZWdOZlZMZ25ZMUsvekZPTWNnQ05RSVltekhxNFZrUUY5VHlYSktoNWlhWmhxa1UycU1XREJZakRJRTFyVkc4M1VSbjBEUT09Cg==",
-      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.3/Slash_1.2.3_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVUZVI2QThFNjdoVWJRcEdNMS80RmVjcGxoRDNUSkRFNHBPTkZjRmtNTHBSVkZxbTNYMjN1bndYVUZZRGxnNVovdWdwRFBLcG9BN09sVUdUR2wvQUNRMUszZE95SXc4K2dZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzk0NDg0NzA4CWZpbGU6U2xhc2hfMS4yLjVfeDY0LXNldHVwLmV4ZQpNcy9Scm1Ga0wzZ0l1Z1QxTnZHRkE5MnJmd3d3eUZoaG82S1ArOHc5dzV3UXVYZVAxQ0lTWE0rSU1xc0ZJMytDTFVhMUE5OTZDeDlRdUpMYmh1ak5BZz09Cg==",
+      "url": "https://ytw0728.github.io/docs/slash/desktops/v1.2.5/Slash_1.2.5_x64-setup.exe"
     }
   }
 }
