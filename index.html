@@ -122,7 +122,9 @@ p, li, .omni-empty, .foot-copy { text-wrap: pretty; }
 /* Anything holding a URL or a command keeps breaking anywhere it must. */
 .tab-pane code, .omni-url, .omni-out, code { word-break: break-all; }
 
-.container { max-width: var(--maxw); margin: 0 auto; padding: 0 24px; }
+/* Gutter grows with the viewport: a fixed 16px felt cramped on phones and
+   tablets, where the cards sat almost against the screen edge. */
+.container { max-width: var(--maxw); margin: 0 auto; padding-inline: clamp(24px, 4.5vw, 40px); }
 
 .icon { width: 1em; height: 1em; flex: none; stroke-width: 1.75; }
 
@@ -510,15 +512,14 @@ body.lang-en [data-lang="ko"], body.lang-ko [data-lang="en"] { display: none !im
 @media (max-width: 640px) {
   section { padding: 72px 0; }
   .hero { padding: 92px 0 72px; }
-  .container { padding: 0 16px; }
   .controls { top: 10px; right: 10px; }
   .seg button { padding: 5px 9px; font-size: .78rem; }
   .hero-cta { flex-direction: column; align-items: stretch; }
   .hero-cta .btn { justify-content: center; }
-  .install-head, .install-body { padding-left: 22px; padding-right: 22px; }
+  .install-head, .install-body { padding-left: 24px; padding-right: 24px; }
   .omni-hint { display: none; }
-  .omni-top { padding: 14px; }
-  .omni-row { padding: 11px 14px; }
+  .omni-top { padding: 15px 16px; }
+  .omni-row { padding: 12px 16px; }
 }
 </style>
 </head>
