@@ -545,6 +545,7 @@ body.lang-en [data-lang="ko"], body.lang-ko [data-lang="en"] { display: none !im
     <g id="i-sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></g>
     <g id="i-moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></g>
     <g id="i-download" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10m0 0 4-4m-4 4-4-4"/><path d="M5 17v1a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1"/></g>
+    <g id="i-reset" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4h4"/></g>
     <g id="i-gauge" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18a8.5 8.5 0 1 1 16 0"/><path d="m14.5 10.5-3 4"/></g>
     <g id="i-cloud-off" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 18.5h9.5a4 4 0 0 0 .6-7.95A6 6 0 0 0 7.1 8.6"/><path d="M4 4.5 20 20"/></g>
     <g id="i-info" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></g>
@@ -579,7 +580,7 @@ body.lang-en [data-lang="ko"], body.lang-ko [data-lang="en"] { display: none !im
         <div class="brand">
           <img src="logo.svg" alt="Slash">
           <span class="brand-name">Slash</span>
-          <span class="brand-tag">v1.2.5</span>
+          <span class="brand-tag">v1.2.6</span>
         </div>
         <h1>
           <span data-lang="en">Your bookmarks, <span class="grad">by path</span>.</span>
@@ -682,14 +683,19 @@ body.lang-en [data-lang="ko"], body.lang-ko [data-lang="en"] { display: none !im
 <section class="whatsnew" id="whatsnew">
   <div class="container">
     <div class="sec-head reveal">
-      <span class="sec-eyebrow">v1.2.5</span>
+      <span class="sec-eyebrow">v1.2.6</span>
       <h2><span data-lang="en">What's New</span><span data-lang="ko">새로운 기능</span></h2>
       <p>
-        <span data-lang="en">A much faster desktop app, and bookmarks that resolve correctly when Chrome keeps them in your Google account.</span>
-        <span data-lang="ko">데스크톱 앱이 훨씬 빨라졌고, Google 계정에 저장된 북마크까지 제대로 찾아가요.</span>
+        <span data-lang="en">The overlay reopens empty, the desktop app starts fast, and bookmarks resolve even when Chrome keeps them in your Google account.</span>
+        <span data-lang="ko">오버레이가 늘 빈 상태로 열리고, 데스크톱 앱은 빠르게 뜨고, Google 계정에 저장된 북마크까지 제대로 찾아가요.</span>
       </p>
     </div>
     <div class="wn-grid reveal">
+      <div class="wn-item">
+        <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-reset"/></svg><span data-lang="en">A clean slate every time</span><span data-lang="ko">열 때마다 빈&nbsp;입력</span></h3>
+        <p data-lang="en">The overlay is hidden rather than destroyed, so a query you had already opened or dismissed was still sitting in the box next time. Closing it now clears the search, the variable chips and the selection, whichever way you close it.</p>
+        <p data-lang="ko">오버레이는 닫히는 게 아니라 숨겨지기 때문에, 이미 열었거나 취소한 검색어가 다음에 그대로 남아 있었어요. 이제 어떤 방법으로 닫아도 검색어와 변수&nbsp;칩, 선택 상태까지 같이 비워요.</p>
+      </div>
       <div class="wn-item">
         <h3><svg class="icon" viewBox="0 0 24 24"><use href="#i-gauge"/></svg><span data-lang="en">Instant cold start</span><span data-lang="ko">즉각적인 첫&nbsp;실행</span></h3>
         <p data-lang="en">The desktop app scanned every extension's database to find its own. It now reads only where its marker can be, and caches the result until Chrome writes again.</p>
