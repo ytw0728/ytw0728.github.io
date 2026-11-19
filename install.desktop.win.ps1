@@ -1,5 +1,5 @@
 $AppName = "Slash"
-$InstallerUrl = "https://ytw0728.github.io/docs/slash/desktops/v1.2.5/Slash_1.2.5_x64-setup.exe"
+$InstallerUrl = "https://ytw0728.github.io/docs/slash/desktops/v1.2.6/Slash_1.2.6_x64-setup.exe"
 $TempPath = "$env:TEMP\Slash_setup.exe"
 
 Write-Host "Downloading $AppName..."
